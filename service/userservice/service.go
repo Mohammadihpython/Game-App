@@ -62,3 +62,8 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 	return RegisterResponse{User: createdUser}, nil
 
 }
+
+func New(repo Repository) Service {
+	return Service{repo: repo}
+
+}

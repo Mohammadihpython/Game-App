@@ -2,3 +2,10 @@
 docker pull image-name:version
 docker pull mysql:8.0
 
+
+
+HOW SEND POST REQUEST WITH CURL
+
+curl -X POST http://localhost:8000/users/login \
+-H "Content-type: application/json" \
+-d '{"name":"Hamed","phoneNumber":"0912"}'
