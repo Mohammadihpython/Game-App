@@ -1,0 +1,22 @@
+version: '3.8'
+
+
+services:
+  database:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    container_name: DB
+    volumes:
+      - db:/var/lib/mysql
+    restart: always
+    command: ["mysql", '--cha racter-set-server=utf8mb4','--collation-server=utf8mb4_unicode_ci']
+    environment:
+      MYSQL_ROOT_PASSWORD: hmah8013
+      MYSQL_DATABASE: gameappDB
+      MYSQL_USER: Hamed
+      MYSQL_PASSWORD: hmah8013
+
+
+volumes:
+  db:

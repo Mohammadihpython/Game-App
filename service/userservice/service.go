@@ -35,7 +35,7 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 		if err != nil {
 			// %w wrap the error and show us the last errors corrupted for this error
 			//ارور های قبلی را که مربوط به این خطا هست زا نیز نشان می دهد
-			return Regist erResponse{}, fmt.Errorf("failed to check if phone is unique: %w", err)
+			return RegisterResponse{}, fmt.Errorf("failed to check if phone is unique: %w", err)
 		}
 		if !isUnique {
 			return RegisterResponse{}, errors.New("phone number is already used")

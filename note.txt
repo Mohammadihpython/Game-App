@@ -1,0 +1,4 @@
+## pulling an image from docker
+docker pull image-name:version
+docker pull mysql:8.0
+
