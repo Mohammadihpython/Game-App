@@ -1,8 +1,10 @@
 package entity
 
 type User struct {
-	ID          uint
-	PhoneNumber string
-	Name        string
-	Avatar      string
+	ID          uint   `json:"id"`
+	PhoneNumber string `json:"phone_number"`
+	Name        string `json:"name"`
+	Avatar      string `json:"avatar"`
+	// password always keep hashed password
+	Password string `json:"password"`
 }

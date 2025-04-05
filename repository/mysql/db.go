@@ -12,7 +12,7 @@ type MYSQL struct {
 
 func New() *MYSQL {
 
-	db, err := sql.Open("mysql", "user:password@(localhost:3380)/dbname")
+	db, err := sql.Open("mysql", "Hamed:hmah8013@(localhost:3308)/gameappDB")
 	if err != nil {
 		panic(err)
 	}
