@@ -2,17 +2,30 @@ package mysql
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
 )
 
-type MYSQL struct {
-	db *sql.DB
+type Config struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	DBName   string
 }
 
-func New() *MYSQL {
+type MYSQL struct {
+	config Config
+	db     *sql.DB
+}
 
-	db, err := sql.Open("mysql", "Hamed:hmah8013@(localhost:3308)/gameappDB")
+func New(cfg Config) *MYSQL {
+	path := fmt.Sprintf("%s:%s@(%s:%d)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName)
+	fmt.Println(path)
+	db, err := sql.Open(
+		"mysql",
+		fmt.Sprintf("%s:%s@(%s:%d)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
 	if err != nil {
 		panic(err)
 	}
@@ -20,6 +33,6 @@ func New() *MYSQL {
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
-	return &MYSQL{db}
+	return &MYSQL{config: cfg, db: db}
 
 }

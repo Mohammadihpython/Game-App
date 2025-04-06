@@ -6,5 +6,5 @@ type User struct {
 	Name        string `json:"name"`
 	Avatar      string `json:"avatar"`
 	// password always keep hashed password
-	Password string `json:"password"`
+	Password string `json:"-"`
 }

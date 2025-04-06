@@ -8,22 +8,20 @@ import (
 	"time"
 )
 
-type Service struct {
+type Config struct {
 	SignKey               string
-	accessExpirationTime  time.Duration
-	refreshExpirationTime time.Duration
-	accessSubject         string
-	refreshSubject        string
+	AccessExpirationTime  time.Duration
+	RefreshExpirationTime time.Duration
+	AccessSubject         string
+	RefreshSubject        string
+}
+type Service struct {
+	config Config
 }
 
-func New(signKey string, accessExpirationTime time.Duration, refreshExpirationTime time.Duration, accessSubject string, refreshSubject string) Service {
+func New(cfg Config) Service {
 	return Service{
-		SignKey:               signKey,
-		accessExpirationTime:  accessExpirationTime,
-		refreshExpirationTime: refreshExpirationTime,
-		accessSubject:         accessSubject,
-		refreshSubject:        refreshSubject,
-	}
+		config: cfg}
 }
 
 type Claims struct {
@@ -32,11 +30,11 @@ type Claims struct {
 }
 
 func (s Service) CreateAccessToken(user entity.User) (string, error) {
-	return s.createToken(user.ID, s.accessExpirationTime, s.accessSubject)
+	return s.createToken(user.ID, s.config.AccessExpirationTime, s.config.AccessSubject)
 
 }
 func (s Service) CreateRefreshToken(user entity.User) (string, error) {
-	return s.createToken(user.ID, s.refreshExpirationTime, s.refreshSubject)
+	return s.createToken(user.ID, s.config.RefreshExpirationTime, s.config.RefreshSubject)
 
 }
 
@@ -51,7 +49,7 @@ func (s Service) createToken(userID uint, expireDuration time.Duration, subject 
 		UserID: userID,
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessTokenString, err := accessToken.SignedString([]byte(s.SignKey))
+	accessTokenString, err := accessToken.SignedString([]byte(s.config.SignKey))
 	if err != nil {
 		return "", err
 	}
@@ -62,7 +60,7 @@ func (s Service) createToken(userID uint, expireDuration time.Duration, subject 
 func (s Service) ParsToken(BearerToken string) (*Claims, error) {
 	tokenStr := strings.Replace(BearerToken, "Bearer ", "", 1)
 	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(s.SignKey), nil
+		return []byte(s.config.SignKey), nil
 	})
 	if err != nil {
 		return nil, err
