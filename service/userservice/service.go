@@ -6,8 +6,6 @@ import (
 	"GameApp/repository/mysql"
 	"errors"
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
-	"time"
 )
 
 type Repository interface {
@@ -17,13 +15,14 @@ type Repository interface {
 	GetUserByID(userID uint) (entity.User, error)
 }
 
-var (
-	secret = "%324sdf"
-)
+type AuthService interface {
+	CreateRefreshToken(user entity.User) (string, error)
+	CreateAccessToken(user entity.User) (string, error)
+}
 
 type Service struct {
-	signKey string
-	repo    Repository
+	repo Repository
+	auth AuthService
 }
 type RegisterRequest struct {
 	Name        string `json:"name"`
@@ -81,8 +80,8 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 
 }
 
-func New(repo Repository, signKey string) Service {
-	return Service{repo: repo, signKey: signKey}
+func New(repo Repository, auth AuthService) Service {
+	return Service{repo: repo, auth: auth}
 
 }
 
@@ -92,7 +91,8 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	AccessToken string `json:"access_token"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 	//RefreshToken string `json:"refresh_token"`
 }
 
@@ -111,12 +111,16 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 		return LoginResponse{}, fmt.Errorf("user or password not valid ")
 
 	}
-	token, err := createToken(user.ID, s.signKey)
+	accessToken, err := s.auth.CreateAccessToken(user)
 	if err != nil {
 		return LoginResponse{}, fmt.Errorf("failed to create token: %w", err)
 	}
+	refreshToken, err := s.auth.CreateRefreshToken(user)
+	if err != nil {
+		return LoginResponse{}, fmt.Errorf("failed to refresh token: %w", err)
+	}
 
-	return LoginResponse{AccessToken: token}, nil
+	return LoginResponse{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 
 	//	compare user.password with re.password
 
@@ -141,29 +145,5 @@ func (s Service) Profile(req ProfileRequest) (ProfileResponse, error) {
 	}
 	fmt.Println(ProfileResponse{Name: user.Name})
 	return ProfileResponse{Name: user.Name}, nil
-
-}
-
-//type Claims struct {
-//	RegisteredClaims jwt.RegisteredClaims
-//	UserID           uint
-//}
-//
-//func (c Claims) Valid() error {
-//	return nil
-//}
-
-func createToken(userID uint, signKey string) (string, error) {
-	// create a signer for rsa 256
-	// TODO : replace with rsa 256 RS256
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * 72).Unix(),
-	})
-	tokenString, err := claims.SignedString([]byte(secret))
-	if err != nil {
-		return "", err
-	}
-	return tokenString, nil
 
 }

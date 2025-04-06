@@ -2,15 +2,17 @@ package main
 
 import (
 	"GameApp/repository/mysql"
+	"GameApp/service/authservice"
 	"GameApp/service/userservice"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"time"
 )
 
-const SECRET = "435#hfga"
+const SECRET = "Hmdsfksdf"
 
 func main() {
 
@@ -50,7 +52,9 @@ func userRegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	mysqlRepo := mysql.New()
-	userSvc := userservice.New(mysqlRepo, SECRET)
+	authSvc := authservice.New(SECRET, time.Hour*24, time.Hour*24*7, "at", "rt")
+
+	userSvc := userservice.New(mysqlRepo, authSvc)
 	_, err = userSvc.Register(req)
 	if err != nil {
 		w.WriteHeader(400)
@@ -78,7 +82,9 @@ func userLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	mysqlRepo := mysql.New()
-	userSvc := userservice.New(mysqlRepo, SECRET)
+	authSvc := authservice.New(SECRET, time.Hour*24, time.Hour*24*7, "at", "rt")
+
+	userSvc := userservice.New(mysqlRepo, authSvc)
 	res, err := userSvc.Login(req)
 	if err != nil {
 		w.WriteHeader(400)
@@ -101,24 +107,19 @@ func userProfileHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, `{"error":"invalid Method" }`)
 
 	}
-	// Get user id from body
-	data, err := io.ReadAll(r.Body)
-	if err != nil {
-		w.WriteHeader(400)
-		w.Write([]byte(fmt.Sprintf(`{"error": "%s"}`, err.Error())))
-		return
-	}
-	var req userservice.ProfileRequest
-	err = json.Unmarshal(data, &req)
+	authSvc := authservice.New(SECRET, time.Hour*24, time.Hour*24*7, "at", "rt")
+	// Get user id from Jwt Token
+	auth := r.Header.Get("Authorization")
+	claims, err := authSvc.ParsToken(auth)
 	if err != nil {
 		w.WriteHeader(400)
 		w.Write([]byte(fmt.Sprintf(`{"error": "%s"}`, err.Error())))
 		return
 	}
 
-	pReq := userservice.ProfileRequest{UserID: req.UserID}
+	pReq := userservice.ProfileRequest{UserID: claims.UserID}
 	mysqlRepo := mysql.New()
-	userSvc := userservice.New(mysqlRepo, SECRET)
+	userSvc := userservice.New(mysqlRepo, authSvc)
 	res, err := userSvc.Profile(pReq)
 	if err != nil {
 		w.WriteHeader(400)
@@ -126,7 +127,7 @@ func userProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(res)
-	data, err = json.Marshal(res)
+	data, err := json.Marshal(res)
 	fmt.Println(string(data))
 	if err != nil {
 		w.WriteHeader(400)
