@@ -39,7 +39,7 @@ func (s Server) userProfile(c echo.Context) error {
 	authToken := c.Request().Header.Get("Authorization")
 	claims, err := s.authSvc.ParsToken(authToken)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 	return c.JSON(http.StatusOK, claims)
 }

@@ -62,7 +62,7 @@ func (d MYSQL) GetUserByID(userid uint) (entity.User, error) {
 func scanRow(row *sql.Row) (entity.User, error) {
 	user := entity.User{}
 	var createdAT []uint8
-	err := row.Scan(&user.ID, &user.Name, &user.PhoneNumber, &user.Password, &createdAT)
+	err := row.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAT, &user.Password)
 	return user, err
 
 }

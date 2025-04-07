@@ -9,3 +9,14 @@ HOW SEND POST REQUEST WITH CURL
 curl -X POST http://localhost:8000/users/login \
 -H "Content-type: application/json" \
 -d '{"name":"Hamed","phoneNumber":"0912"}'
+
+
+for run sql migrate
+first you must create an dbconfig.yml file
+and configure it
+
+then with this command you can run this
+
+sql-migrate status -env="production" -config=dbconfig.yml
+sql-migrate up -env="production" -config=dbconfig.yml -limit=1
+sql-migrate down -env="production" -config=dbconfig.yml -limit=1

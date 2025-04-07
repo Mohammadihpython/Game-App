@@ -89,12 +89,23 @@ type LoginRequest struct {
 	PhoneNumber string `json:"phone_number"`
 	Password    string `json:"password"`
 }
+type UserInfo struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	PhoneNumber string `json:"phone_number"`
+}
 
-type LoginResponse struct {
+type Tokens struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-	//RefreshToken string `json:"refresh_token"`
 }
+
+type LoginResponse struct {
+	User   UserInfo `json:"user"`
+	Tokens Tokens   `json:"tokens"`
+}
+
+//RefreshToken string `json:"refresh_token"`
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	//  check the existence of phone number from repository
@@ -120,7 +131,17 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 		return LoginResponse{}, fmt.Errorf("failed to refresh token: %w", err)
 	}
 
-	return LoginResponse{AccessToken: accessToken, RefreshToken: refreshToken}, nil
+	return LoginResponse{
+		User: UserInfo{
+			ID:          user.ID,
+			Name:        user.Name,
+			PhoneNumber: user.PhoneNumber,
+		},
+		Tokens: Tokens{
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
+		},
+	}, nil
 
 	//	compare user.password with re.password
 
