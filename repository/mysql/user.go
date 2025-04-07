@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"time"
 )
 
 func (d MYSQL) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
@@ -60,8 +61,10 @@ func (d MYSQL) GetUserByID(userid uint) (entity.User, error) {
 	return user, nil
 }
 func scanRow(row *sql.Row) (entity.User, error) {
+	// ParseTime=true handel fileds that time.time type and we didnt meed to convert to
+	// []byte like var createdAT []uint8 instead we use time.time
 	user := entity.User{}
-	var createdAT []uint8
+	var createdAT time.Time
 	err := row.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAT, &user.Password)
 	return user, err
 

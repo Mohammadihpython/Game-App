@@ -3,6 +3,7 @@ package main
 import (
 	"GameApp/conf"
 	"GameApp/delicery/httpserver"
+	migrator "GameApp/repository/migrator"
 	"GameApp/repository/mysql"
 	"GameApp/service/authservice"
 	"GameApp/service/userservice"
@@ -37,22 +38,12 @@ func main() {
 			DBName:   "gameappDB",
 		},
 	}
-
+	// TODO add command for migrations
+	mgr := migrator.New(cfg.Mysql)
+	mgr.Up()
 	userSvc, authSvc := setupServices(cfg)
 	server := httpserver.New(cfg, authSvc, userSvc)
 	server.Serve()
-
-	//httpserver.HandleFunc("/users/register",userRegisterHandler)
-	//httpserver.ListenAndServe(:8080,nil)
-	// another way is to use multiplexer
-	//mux := http.NewServeMux()
-	//mux.HandleFunc("/users/register", userRegisterHandler)
-	//mux.HandleFunc("/health", HealthCheck)
-	//mux.HandleFunc("/users/login", userLoginHandler)
-	//mux.HandleFunc("/users/profile", userProfileHandler)
-	//
-	//server = httpserver.New(cfg, authSvc, userSvc)
-	//log.Fatal(server.ListenAndServe())
 
 }
 

@@ -21,8 +21,7 @@ type MYSQL struct {
 }
 
 func New(cfg Config) *MYSQL {
-	path := fmt.Sprintf("%s:%s@(%s:%d)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName)
-	fmt.Println(path)
+
 	db, err := sql.Open(
 		"mysql",
 		fmt.Sprintf("%s:%s@(%s:%d)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
