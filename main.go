@@ -3,7 +3,6 @@ package main
 import (
 	"GameApp/conf"
 	"GameApp/delicery/httpserver"
-	migrator "GameApp/repository/migrator"
 	"GameApp/repository/mysql"
 	"GameApp/service/authservice"
 	"GameApp/service/userservice"
@@ -38,9 +37,9 @@ func main() {
 			DBName:   "gameappDB",
 		},
 	}
-	// TODO add command for migrations
-	mgr := migrator.New(cfg.Mysql)
-	mgr.Up()
+	// TODO add command for migrations to dont run automatically
+	//mgr := migrator.New(cfg.Mysql)
+	//mgr.Up()
 	userSvc, authSvc := setupServices(cfg)
 	server := httpserver.New(cfg, authSvc, userSvc)
 	server.Serve()

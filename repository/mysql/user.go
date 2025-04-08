@@ -2,12 +2,12 @@ package mysql
 
 import (
 	"GameApp/entity"
+	"GameApp/pkg/richerror"
 	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"time"
 )
 
 func (d MYSQL) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
@@ -42,7 +42,7 @@ func (d MYSQL) GetUserByPhone(phone_number string) (entity.User, bool, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return entity.User{}, false, nil
 		}
-		return entity.User{}, false, fmt.Errorf("cant scan query result: %w", err)
+		return entity.User{}, false, richerror.New("userservice.GetUserByPhone").WithWrappedError(err)
 	}
 
 	return user, true, nil
@@ -53,10 +53,10 @@ func (d MYSQL) GetUserByID(userid uint) (entity.User, error) {
 	user, err := scanRow(row)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return entity.User{}, fmt.Errorf("cant scan query result: %w", err)
+			return entity.User{}, richerror.New("userservice.GetUserByID").WithWrappedError(err)
 
 		}
-		return entity.User{}, fmt.Errorf("cant scan query result: %w", err)
+		return entity.User{}, richerror.New("userservice.GetUserByID").WithWrappedError(err)
 	}
 	return user, nil
 }
@@ -64,7 +64,7 @@ func scanRow(row *sql.Row) (entity.User, error) {
 	// ParseTime=true handel fileds that time.time type and we didnt meed to convert to
 	// []byte like var createdAT []uint8 instead we use time.time
 	user := entity.User{}
-	var createdAT time.Time
+	var createdAT []uint8
 	err := row.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAT, &user.Password)
 	return user, err
 

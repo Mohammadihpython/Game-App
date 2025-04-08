@@ -3,6 +3,7 @@ package userservice
 import (
 	"GameApp/entity"
 	"GameApp/pkg/phonenumber"
+	"GameApp/pkg/richerror"
 	"GameApp/repository/mysql"
 	"errors"
 	"fmt"
@@ -108,12 +109,15 @@ type LoginResponse struct {
 //RefreshToken string `json:"refresh_token"`
 
 func (s Service) Login(req LoginRequest) (LoginResponse, error) {
+	const op = "userservice.Login"
 	//  check the existence of phone number from repository
 	//	get the user by phone number
 	// TODO : Its better to  separate method for check existence check  of get user by phone number
 	user, exists, err := s.repo.GetUserByPhone(req.PhoneNumber)
 	if err != nil {
-		return LoginResponse{}, fmt.Errorf("unexpected error : %w", err)
+		return LoginResponse{}, richerror.New(op).
+			WithMessage("failed to get user by phone number").
+			WithMeta(map[string]interface{}{"Req": req}).WithWrappedError(err)
 	}
 	if !exists {
 		return LoginResponse{}, fmt.Errorf("user or password not valid")
@@ -162,7 +166,7 @@ func (s Service) Profile(req ProfileRequest) (ProfileResponse, error) {
 		//"record not found" error,
 		// because I assume the input is sanitized
 		// TODO we can use Rich Error
-		return ProfileResponse{}, fmt.Errorf("unexpected error : %w", err)
+		return ProfileResponse{}, richerror.New("userService.Profile").WithWrappedError(err)
 	}
 	fmt.Println(ProfileResponse{Name: user.Name})
 	return ProfileResponse{Name: user.Name}, nil
