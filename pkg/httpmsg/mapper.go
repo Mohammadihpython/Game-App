@@ -15,10 +15,7 @@ func CodeAndMessage(err error) (message string, code int) {
 	var richError richerror.RichError
 	switch {
 	case errors.As(err, &richError):
-		// use errors.As instead of check directly err.(richerror.RichError)
-		//Since Go 1.13, errors can be wrapped using the fmt.Errorf function with the %w verb. Therefore,
-		//type assertion or type switch on errors fails on wrapped errors. The preferred way for checking for a specific error type is to use the errors.
-		//As function from the standard library as this function traverses the chain of the wrapped errors while checking for a specific error type.
+
 		var re richerror.RichError
 		msg := re.Message()
 		// because we get recursive message and code if it didn't set in uper layer

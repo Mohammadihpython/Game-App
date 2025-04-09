@@ -2,15 +2,13 @@ package userservice
 
 import (
 	"GameApp/entity"
-	"GameApp/pkg/phonenumber"
+	"GameApp/param"
 	"GameApp/pkg/richerror"
 	"GameApp/repository/mysql"
-	"errors"
 	"fmt"
 )
 
 type Repository interface {
-	IsPhoneNumberUnique(phoneNumber string) (bool, error)
 	RegisterUser(u entity.User) (entity.User, error)
 	GetUserByPhone(phoneNumber string) (entity.User, bool, error)
 	GetUserByID(userID uint) (entity.User, error)
@@ -25,44 +23,8 @@ type Service struct {
 	repo Repository
 	auth AuthService
 }
-type RegisterRequest struct {
-	Name        string `json:"name"`
-	PhoneNumber string `json:"phone_number"`
-	Password    string `json:"password"`
-}
-type RegisterResponse struct {
-	User entity.User `json:"user"`
-}
 
-func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
-	// TODO : We should verify phone number by verification code
-	// Validate phone number
-	if !phonenumber.IsValid(req.PhoneNumber) {
-		return RegisterResponse{}, fmt.Errorf("invalid phone")
-	}
-	// check uniqueness of phone number
-	// we used shorthand if here
-	if isUnique, err := s.repo.IsPhoneNumberUnique(req.PhoneNumber); err != nil || !isUnique {
-		if err != nil {
-			// %w wrap the error and show us the last errors corrupted for this error
-			//ارور های قبلی را که مربوط به این خطا هست زا نیز نشان می دهد
-			return RegisterResponse{}, fmt.Errorf("failed to check if phone is unique: %w", err)
-		}
-		if !isUnique {
-			return RegisterResponse{}, errors.New("phone number is already used")
-		}
-	}
-
-	//validate name
-	// TODO : Add support for Persion word or not ASID word
-	if len(req.Name) < 3 {
-		return RegisterResponse{}, errors.New("name is too short")
-	}
-
-	// TODO validate password with regex
-	if len(req.Password) > 8 {
-		return RegisterResponse{}, errors.New("password length must greater than 8")
-	}
+func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, error) {
 
 	user := entity.User{
 		ID:          0,
@@ -73,11 +35,11 @@ func (s Service) Register(req RegisterRequest) (RegisterResponse, error) {
 	// create new user in storage
 	createdUser, err := s.repo.RegisterUser(user)
 	if err != nil {
-		return RegisterResponse{}, fmt.Errorf("failed to register user: %w", err)
+		return param.RegisterResponse{}, fmt.Errorf("failed to register user: %w", err)
 	}
 
 	//	 return created user
-	return RegisterResponse{User: createdUser}, nil
+	return param.RegisterResponse{User: createdUser}, nil
 
 }
 
@@ -90,11 +52,6 @@ type LoginRequest struct {
 	PhoneNumber string `json:"phone_number"`
 	Password    string `json:"password"`
 }
-type UserInfo struct {
-	ID          uint   `json:"id"`
-	Name        string `json:"name"`
-	PhoneNumber string `json:"phone_number"`
-}
 
 type Tokens struct {
 	AccessToken  string `json:"access_token"`
@@ -102,8 +59,8 @@ type Tokens struct {
 }
 
 type LoginResponse struct {
-	User   UserInfo `json:"user"`
-	Tokens Tokens   `json:"tokens"`
+	User   param.UserInfo `json:"user"`
+	Tokens Tokens         `json:"tokens"`
 }
 
 //RefreshToken string `json:"refresh_token"`
@@ -136,7 +93,7 @@ func (s Service) Login(req LoginRequest) (LoginResponse, error) {
 	}
 
 	return LoginResponse{
-		User: UserInfo{
+		User: param.UserInfo{
 			ID:          user.ID,
 			Name:        user.Name,
 			PhoneNumber: user.PhoneNumber,
