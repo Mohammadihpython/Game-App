@@ -12,11 +12,10 @@ func CodeAndMessage(err error) (message string, code int) {
 	//type assertion or type switch on errors fails on wrapped errors.
 	//The preferred way for checking for a specific error type is to use the errors.
 	//As function from the standard library as this function traverses the chain of the wrapped errors while checking for a specific error type.
-	var richError richerror.RichError
+	var re richerror.RichError
 	switch {
-	case errors.As(err, &richError):
+	case errors.As(err, &re):
 
-		var re richerror.RichError
 		msg := re.Message()
 		// because we get recursive message and code if it didn't set in uper layer
 		// when we get server error not secure to send message of them  this to client

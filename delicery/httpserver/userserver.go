@@ -1,16 +1,18 @@
 package httpserver
 
 import (
+	"GameApp/param"
 	"GameApp/pkg/httpmsg"
 	"GameApp/pkg/richerror"
 	"GameApp/service/userservice"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 func (s Server) userRegister(c echo.Context) error {
 
-	var req userservice.RegisterRequest
+	var req param.RegisterRequest
 	err := c.Bind(&req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, richerror.New("userservice.userRegister").
@@ -19,6 +21,19 @@ func (s Server) userRegister(c echo.Context) error {
 			WithKind(richerror.KindInvalid),
 		)
 	}
+	if err, fieldError := s.userValidator.ValidateRegisterRequest(req); err != nil {
+		fmt.Println(err.Error())
+		fmt.Println(fieldError)
+
+		msg, code := httpmsg.CodeAndMessage(err)
+		fmt.Println(msg, code)
+		return c.JSON(
+			code, echo.Map{
+				"message": msg,
+				"errors":  fieldError,
+			})
+	}
+
 	res, err := s.userSvc.Register(req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, richerror.New("userservice.userRegister").

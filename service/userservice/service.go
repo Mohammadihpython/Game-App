@@ -25,7 +25,7 @@ type Service struct {
 }
 
 func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, error) {
-
+   
 	user := entity.User{
 		ID:          0,
 		Name:        req.Name,
