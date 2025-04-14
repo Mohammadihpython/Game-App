@@ -12,14 +12,11 @@ func (s Service) Login(req param.LoginRequest) (param.LoginResponse, error) {
 	//  check the existence of phone number from repository
 	//	get the user by phone number
 	// TODO : Its better to  separate method for check existence check  of get user by phone number
-	user, exists, err := s.repo.GetUserByPhone(req.PhoneNumber)
+	user, err := s.repo.GetUserByPhone(req.PhoneNumber)
 	if err != nil {
 		return param.LoginResponse{}, richerror.New(op).
 			WithMessage("failed to get user by phone number").
 			WithMeta(map[string]interface{}{"Req": req}).WithWrappedError(err)
-	}
-	if !exists {
-		return param.LoginResponse{}, fmt.Errorf("user or password not valid")
 	}
 	if user.Password != mysql.GetMD5Hash(req.Password) {
 		return param.LoginResponse{}, fmt.Errorf("user or password not valid ")

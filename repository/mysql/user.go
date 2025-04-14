@@ -36,17 +36,19 @@ func (d MYSQL) RegisterUser(u entity.User) (entity.User, error) {
 
 	return u, nil
 }
-func (d MYSQL) GetUserByPhone(phone_number string) (entity.User, bool, error) {
+func (d MYSQL) GetUserByPhone(phone_number string) (entity.User, error) {
 	row := d.db.QueryRow(`SELECT * FROM users WHERE phone_number = ?`, phone_number)
 	user, err := scanRow(row)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return entity.User{}, false, nil
+			return entity.User{}, richerror.New("userservice.GetUserByPhone").WithWrappedError(err).
+				WithKind(richerror.KindNotFound)
 		}
-		return entity.User{}, false, richerror.New("userservice.GetUserByPhone").WithWrappedError(err)
+		return entity.User{}, richerror.New("userservice.GetUserByPhone").WithWrappedError(err).
+			WithKind(richerror.KindUnexpected)
 	}
 
-	return user, true, nil
+	return user, nil
 }
 
 func (d MYSQL) GetUserByID(userid uint) (entity.User, error) {

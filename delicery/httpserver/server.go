@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"GameApp/conf"
+	"GameApp/delicery/httpserver/userHandler"
 	"GameApp/service/authservice"
 	"GameApp/service/userservice"
 	"GameApp/validator/uservalidator"
@@ -11,18 +12,14 @@ import (
 )
 
 type Server struct {
-	config        conf.Config
-	authSvc       authservice.Service
-	userSvc       userservice.Service
-	userValidator uservalidator.Validator
+	config      conf.Config
+	userHandler userHandler.Handler
 }
 
 func New(cfg conf.Config, authSvc authservice.Service, userSvc userservice.Service, validator uservalidator.Validator) Server {
 	return Server{
-		config:        cfg,
-		authSvc:       authSvc,
-		userSvc:       userSvc,
-		userValidator: validator,
+		config:      cfg,
+		userHandler: userHandler.New(authSvc, userSvc, validator),
 	}
 }
 
@@ -36,9 +33,7 @@ func (s Server) Serve() {
 
 	//	Routes
 	e.GET("/", s.healthCheck)
-	e.POST("/users/register", s.userRegister)
-	e.POST("/users/login", s.userLogin)
-	e.GET("/users/profile", s.userProfile)
+	s.userHandler.SetUserRouter(e)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", s.config.HTTPServer.Port)))
 

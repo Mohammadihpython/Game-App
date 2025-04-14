@@ -1,16 +1,28 @@
-package httpserver
+package userHandler
 
 import (
 	"GameApp/param"
 	"GameApp/pkg/httpmsg"
 	"GameApp/pkg/richerror"
+	"GameApp/service/authservice"
 	"GameApp/service/userservice"
+	"GameApp/validator/uservalidator"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-func (s Server) userRegister(c echo.Context) error {
+type Handler struct {
+	authSvc       authservice.Service
+	userSvc       userservice.Service
+	userValidator uservalidator.Validator
+}
+
+func New(authSVC authservice.Service, userSvc userservice.Service, userValidator uservalidator.Validator) Handler {
+	return Handler{authSvc: authSVC, userSvc: userSvc, userValidator: userValidator}
+}
+
+func (h Handler) userRegister(c echo.Context) error {
 	var req param.RegisterRequest
 	err := c.Bind(&req)
 	if err != nil {
@@ -20,7 +32,7 @@ func (s Server) userRegister(c echo.Context) error {
 			WithKind(richerror.KindInvalid),
 		)
 	}
-	if err, fieldError := s.userValidator.ValidateRegisterRequest(req); err != nil {
+	if err, fieldError := h.userValidator.ValidateRegisterRequest(req); err != nil {
 		fmt.Println(err.Error())
 		fmt.Println(fieldError)
 
@@ -33,7 +45,7 @@ func (s Server) userRegister(c echo.Context) error {
 			})
 	}
 
-	res, err := s.userSvc.Register(req)
+	res, err := h.userSvc.Register(req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, richerror.New("userservice.userRegister").
 			WithWrappedError(err).
@@ -45,13 +57,13 @@ func (s Server) userRegister(c echo.Context) error {
 
 }
 
-func (s Server) userLogin(c echo.Context) error {
-	var req userservice.LoginRequest
+func (h Handler) userLogin(c echo.Context) error {
+	var req param.LoginRequest
 	err := c.Bind(&req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	res, err := s.userSvc.Login(req)
+	res, err := h.userSvc.Login(req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, richerror.New("userservice.userLogin").
 			WithWrappedError(err).
@@ -64,14 +76,14 @@ func (s Server) userLogin(c echo.Context) error {
 
 }
 
-func (s Server) userProfile(c echo.Context) error {
+func (h Handler) userProfile(c echo.Context) error {
 	authToken := c.Request().Header.Get("Authorization")
-	claims, err := s.authSvc.ParsToken(authToken)
+	claims, err := h.authSvc.ParsToken(authToken)
 	if err != nil {
 		msg, code := httpmsg.CodeAndMessage(err)
 		return echo.NewHTTPError(code, msg)
 	}
-	res, err := s.userSvc.Profile(userservice.ProfileRequest{UserID: claims.UserID})
+	res, err := h.userSvc.Profile(param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError,
 			richerror.New("httpserver.userProfile").
