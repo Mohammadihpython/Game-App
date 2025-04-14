@@ -11,7 +11,6 @@ import (
 )
 
 func (s Server) userRegister(c echo.Context) error {
-
 	var req param.RegisterRequest
 	err := c.Bind(&req)
 	if err != nil {

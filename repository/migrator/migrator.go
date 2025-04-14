@@ -2,6 +2,7 @@ package migrator
 
 import (
 	"GameApp/repository/mysql"
+
 	"database/sql"
 	"fmt"
 	migrate "github.com/rubenv/sql-migrate"
