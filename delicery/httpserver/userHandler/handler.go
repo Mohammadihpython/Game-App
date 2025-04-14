@@ -77,13 +77,15 @@ func (h Handler) userLogin(c echo.Context) error {
 }
 
 func (h Handler) userProfile(c echo.Context) error {
-	authToken := c.Request().Header.Get("Authorization")
-	claims, err := h.authSvc.ParsToken(authToken)
-	if err != nil {
-		msg, code := httpmsg.CodeAndMessage(err)
-		return echo.NewHTTPError(code, msg)
-	}
-	res, err := h.userSvc.Profile(param.ProfileRequest{UserID: claims.UserID})
+	//authToken := c.Request().Header.Get("Authorization")
+	//claims, err := h.authSvc.ParsToken(authToken)
+	//if err != nil {
+	//	msg, code := httpmsg.CodeAndMessage(err)
+	//	return echo.NewHTTPError(code, msg)
+	//}
+	userID := c.Get("user_id")
+	fmt.Println(userID)
+	res, err := h.userSvc.Profile(param.ProfileRequest{UserID: userID.(uint)})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError,
 			richerror.New("httpserver.userProfile").

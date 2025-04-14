@@ -8,7 +8,6 @@ import (
 	"GameApp/validator/uservalidator"
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 type Server struct {
@@ -28,8 +27,8 @@ func (s Server) Serve() {
 	e := echo.New()
 
 	//	 Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	//e.Use(middleware.Logger())
+	//e.Use(middleware.Recover())
 
 	//	Routes
 	e.GET("/", s.healthCheck)
