@@ -27,7 +27,10 @@ func Load() *Config {
 	k.Load(env.Provider("GAMEAPP_", ".", func(s string) string {
 		str := strings.Replace(strings.ToLower(
 			strings.TrimPrefix(s, "GAMEAPP_")), "_", ".", -1)
-		return str
+
+		//fo multiword items such as "sign_key" that we shoud use like "GAMEAPP_AUTH_SIGN__KEY"
+		// TODO Find a better solution if needed
+		return strings.Replace(str, "..", "_", -1)
 
 	}), nil)
 

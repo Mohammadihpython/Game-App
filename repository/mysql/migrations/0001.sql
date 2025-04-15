@@ -1,8 +1,8 @@
 -- +migrate Up
 CREATE TABLE users (
                        id int primary key AUTO_INCREMENT ,
-                       name varchar(255) not null ,
-                       phone_number varchar(255) not null unique,
+                       name varchar(191) not null ,
+                       phone_number varchar(191) not null unique,
                        created_at TIMESTAMP DEFAULT  CURRENT_TIMESTAMP
 );
 

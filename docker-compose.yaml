@@ -11,6 +11,7 @@ services:
       - db:/var/lib/mysql
     restart: always
 
+
     environment:
       MYSQL_ROOT_PASSWORD: hmah8013
       MYSQL_DATABASE: gameappDB

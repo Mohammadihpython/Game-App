@@ -3,6 +3,7 @@ package main
 import (
 	"GameApp/conf"
 	"GameApp/delicery/httpserver"
+	"GameApp/repository/migrator"
 	"GameApp/repository/mysql"
 	"GameApp/service/authservice"
 	"GameApp/service/userservice"
@@ -21,6 +22,7 @@ const (
 
 func main() {
 	fmt.Println("start Echo server")
+	//cfg := conf.Load()
 	cfg := conf.Config{
 		HTTPServer: conf.HTTPServer{Port: 8080},
 		Auth: authservice.Config{
@@ -39,8 +41,8 @@ func main() {
 		},
 	}
 	// TODO add command for migrations to dont run automatically
-	//mgr := migrator.New(cfg.Mysql)
-	//mgr.Up()
+	mgr := migrator.New(cfg.Mysql)
+	mgr.Up()
 	userSvc, authSvc, userValidator := setupServices(cfg)
 	server := httpserver.New(cfg, authSvc, userSvc, userValidator)
 	server.Serve()
