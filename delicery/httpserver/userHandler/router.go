@@ -8,6 +8,6 @@ import (
 func (h Handler) SetUserRouter(e *echo.Echo) {
 	e.POST("/users/register", h.userRegister)
 	e.POST("/users/login", h.userLogin)
-	e.GET("/users/profile", h.userProfile, mymiddleware.Auth)
+	e.GET("/users/profile", h.userProfile, mymiddleware.Auth(h.authSvc, h.authConfig))
 
 }

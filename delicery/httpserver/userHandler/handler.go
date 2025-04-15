@@ -1,6 +1,7 @@
 package userHandler
 
 import (
+	"GameApp/constant"
 	"GameApp/param"
 	"GameApp/pkg/httpmsg"
 	"GameApp/pkg/richerror"
@@ -13,13 +14,21 @@ import (
 )
 
 type Handler struct {
+	SignKey       []byte
+	authConfig    authservice.Config
 	authSvc       authservice.Service
 	userSvc       userservice.Service
 	userValidator uservalidator.Validator
 }
 
-func New(authSVC authservice.Service, userSvc userservice.Service, userValidator uservalidator.Validator) Handler {
-	return Handler{authSvc: authSVC, userSvc: userSvc, userValidator: userValidator}
+func New(
+	authConfig authservice.Config,
+	authSVC authservice.Service,
+	userSvc userservice.Service,
+	userValidator uservalidator.Validator,
+	authSignKey string,
+) Handler {
+	return Handler{authConfig: authConfig, authSvc: authSVC, userSvc: userSvc, userValidator: userValidator, SignKey: []byte(authSignKey)}
 }
 
 func (h Handler) userRegister(c echo.Context) error {
@@ -76,16 +85,23 @@ func (h Handler) userLogin(c echo.Context) error {
 
 }
 
+func getClaims(c echo.Context) *authservice.Claims {
+	claims := c.Get(constant.AuthMiddlewareContextKey)
+
+	//	convert claims object to authService claims object
+	cl, ok := claims.(*authservice.Claims)
+	if !ok {
+		panic("not found claims")
+
+	}
+	return cl
+
+}
+
 func (h Handler) userProfile(c echo.Context) error {
-	//authToken := c.Request().Header.Get("Authorization")
-	//claims, err := h.authSvc.ParsToken(authToken)
-	//if err != nil {
-	//	msg, code := httpmsg.CodeAndMessage(err)
-	//	return echo.NewHTTPError(code, msg)
-	//}
-	userID := c.Get("user_id")
-	fmt.Println(userID)
-	res, err := h.userSvc.Profile(param.ProfileRequest{UserID: userID.(uint)})
+
+	claims := getClaims(c)
+	res, err := h.userSvc.Profile(param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError,
 			richerror.New("httpserver.userProfile").
