@@ -1,19 +1,3 @@
-# Game App With Golang
-In This Game users can play question Games base on the Category their  choice
-and can see their Ranks
-
-
-# Technologies used in this project:
-ECHO framework,
-JWT
-
-
-## Features:
-Authentication System,
-Authorization system,
-RPC communicate between services,
-
-
 # Game App
 ## Table of Contents
 - [About](#about)
@@ -45,9 +29,7 @@ This project built with go and echo framework
 ```
 https://github.com/Mohammadihpython/Game-App.git
 ```
-```
-=
-```
+
 2. Set up environment variables:
 configure your environments in .env  and yaml file in config folder like:
 - SECRET_KEY
