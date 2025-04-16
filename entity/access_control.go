@@ -4,9 +4,8 @@ package entity
 type AccessControl struct {
 	ID uint
 	// I used database polymerize
-	ActorID   uint
-	ActorType ActorType
-
+	ActorID      uint
+	ActorType    ActorType
 	PermissionID uint
 }
 

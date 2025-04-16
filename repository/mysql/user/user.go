@@ -1,8 +1,9 @@
-package mysql
+package user
 
 import (
 	"GameApp/entity"
 	"GameApp/pkg/richerror"
+	"GameApp/repository/mysql"
 	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
@@ -10,7 +11,7 @@ import (
 	"fmt"
 )
 
-func (d MYSQL) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
+func (d *mysql.MYSQL) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 	row := d.db.QueryRow("SELECT * FROM users WHERE phone_number=?", phoneNumber)
 	_, err := scanRow(row)
 	if err != nil {
@@ -24,7 +25,7 @@ func (d MYSQL) IsPhoneNumberUnique(phoneNumber string) (bool, error) {
 	return false, nil
 }
 
-func (d MYSQL) RegisterUser(u entity.User) (entity.User, error) {
+func (d *mysql.MYSQL) RegisterUser(u entity.User) (entity.User, error) {
 	res, err := d.db.Exec(`insert into users(Name,phone_number,password) values(?,?,?) `, u.Name, u.PhoneNumber, u.Password)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("cant execute command : %w", err)
@@ -36,7 +37,7 @@ func (d MYSQL) RegisterUser(u entity.User) (entity.User, error) {
 
 	return u, nil
 }
-func (d MYSQL) GetUserByPhone(phone_number string) (entity.User, error) {
+func (d *mysql.MYSQL) GetUserByPhone(phone_number string) (entity.User, error) {
 	row := d.db.QueryRow(`SELECT * FROM users WHERE phone_number = ?`, phone_number)
 	user, err := scanRow(row)
 	if err != nil {
@@ -51,7 +52,7 @@ func (d MYSQL) GetUserByPhone(phone_number string) (entity.User, error) {
 	return user, nil
 }
 
-func (d MYSQL) GetUserByID(userid uint) (entity.User, error) {
+func (d *mysql.MYSQL) GetUserByID(userid uint) (entity.User, error) {
 	row := d.db.QueryRow("SELECT * FROM users WHERE id = ?", userid)
 	user, err := scanRow(row)
 	if err != nil {
@@ -63,12 +64,12 @@ func (d MYSQL) GetUserByID(userid uint) (entity.User, error) {
 	}
 	return user, nil
 }
-func scanRow(row *sql.Row) (entity.User, error) {
+func scanRow(scanner mysql.Scanner) (entity.User, error) {
 	// ParseTime=true handel fileds that time.time type and we didnt meed to convert to
 	// []byte like var createdAT []uint8 instead we use time.time
 	user := entity.User{}
 	var createdAT []uint8
-	err := row.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAT, &user.Password)
+	err := scanner.Scan(&user.ID, &user.Name, &user.PhoneNumber, &createdAT, &user.Password)
 	return user, err
 
 }

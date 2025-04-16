@@ -3,7 +3,7 @@ package userservice
 import (
 	"GameApp/entity"
 	"GameApp/param"
-	"GameApp/repository/mysql"
+	"GameApp/repository/mysql/user"
 	"fmt"
 )
 
@@ -13,7 +13,7 @@ func (s Service) Register(req param.RegisterRequest) (param.RegisterResponse, er
 		ID:          0,
 		Name:        req.Name,
 		PhoneNumber: req.PhoneNumber,
-		Password:    mysql.GetMD5Hash(req.Password),
+		Password:    user.GetMD5Hash(req.Password),
 	}
 	// create new user in storage
 	createdUser, err := s.repo.RegisterUser(user)

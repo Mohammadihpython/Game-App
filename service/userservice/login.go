@@ -3,7 +3,7 @@ package userservice
 import (
 	"GameApp/param"
 	"GameApp/pkg/richerror"
-	"GameApp/repository/mysql"
+	"GameApp/repository/mysql/user"
 	"fmt"
 )
 
@@ -18,7 +18,7 @@ func (s Service) Login(req param.LoginRequest) (param.LoginResponse, error) {
 			WithMessage("failed to get user by phone number").
 			WithMeta(map[string]interface{}{"Req": req}).WithWrappedError(err)
 	}
-	if user.Password != mysql.GetMD5Hash(req.Password) {
+	if user.Password != user.GetMD5Hash(req.Password) {
 		return param.LoginResponse{}, fmt.Errorf("user or password not valid ")
 
 	}
