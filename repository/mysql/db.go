@@ -20,6 +20,10 @@ type MYSQL struct {
 	db     *sql.DB
 }
 
+func (m MYSQL) Conn() *sql.DB {
+	return m.db
+}
+
 func New(cfg Config) *MYSQL {
 
 	db, err := sql.Open(

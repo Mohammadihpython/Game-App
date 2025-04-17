@@ -5,7 +5,11 @@ import (
 	"GameApp/delicery/httpserver"
 	"GameApp/repository/migrator"
 	"GameApp/repository/mysql"
+	"GameApp/repository/mysql/mysqlaccesscontrol"
+	"GameApp/repository/mysql/mysqluser"
+	"GameApp/service/authorizationservice"
 	"GameApp/service/authservice"
+	"GameApp/service/backofficeuserservice"
 	"GameApp/service/userservice"
 	"GameApp/validator/uservalidator"
 	"fmt"
@@ -43,17 +47,32 @@ func main() {
 	// TODO add command for migrations to dont run automatically
 	mgr := migrator.New(cfg.Mysql)
 	mgr.Up()
-	userSvc, authSvc, userValidator := setupServices(cfg)
-	server := httpserver.New(cfg, authSvc, userSvc, userValidator)
+	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC := setupServices(cfg)
+	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC)
 	server.Serve()
 
 }
 
-func setupServices(cfg conf.Config) (userservice.Service, authservice.Service, uservalidator.Validator) {
+func setupServices(cfg conf.Config) (
+	userservice.Service,
+	authservice.Service,
+	uservalidator.Validator,
+	backofficeuserservice.Service,
+	authorizationservice.Service) {
+
 	authSvc := authservice.New(cfg.Auth)
 	mysqlRepo := mysql.New(cfg.Mysql)
 
-	userSvc := userservice.New(mysqlRepo, authSvc)
-	userValidator := uservalidator.New(mysqlRepo)
-	return userSvc, authSvc, userValidator
+	userMysql := mysqluser.New(mysqlRepo)
+	userSvc := userservice.New(userMysql, authSvc)
+
+	userValidator := uservalidator.New(userMysql)
+
+	backofficeUserSvc := backofficeuserservice.New()
+
+	aclMysql := mysqlaccesscontrol.New(mysqlRepo)
+
+	authorizationSvc := authorizationservice.New(aclMysql)
+
+	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc
 }

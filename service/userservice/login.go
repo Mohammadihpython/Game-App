@@ -3,23 +3,23 @@ package userservice
 import (
 	"GameApp/param"
 	"GameApp/pkg/richerror"
-	"GameApp/repository/mysql/user"
+	"GameApp/repository/mysql/mysqluser"
 	"fmt"
 )
 
 func (s Service) Login(req param.LoginRequest) (param.LoginResponse, error) {
 	const op = "userservice.Login"
 	//  check the existence of phone number from repository
-	//	get the user by phone number
-	// TODO : Its better to  separate method for check existence check  of get user by phone number
+	//	get the mysqluser by phone number
+	// TODO : Its better to  separate method for check existence check  of get mysqluser by phone number
 	user, err := s.repo.GetUserByPhone(req.PhoneNumber)
 	if err != nil {
 		return param.LoginResponse{}, richerror.New(op).
-			WithMessage("failed to get user by phone number").
+			WithMessage("failed to get mysqluser by phone number").
 			WithMeta(map[string]interface{}{"Req": req}).WithWrappedError(err)
 	}
-	if user.Password != user.GetMD5Hash(req.Password) {
-		return param.LoginResponse{}, fmt.Errorf("user or password not valid ")
+	if user.Password != mysqluser.GetMD5Hash(req.Password) {
+		return param.LoginResponse{}, fmt.Errorf("mysqluser or password not valid ")
 
 	}
 	accessToken, err := s.auth.CreateAccessToken(user)
@@ -43,6 +43,6 @@ func (s Service) Login(req param.LoginRequest) (param.LoginResponse, error) {
 		},
 	}, nil
 
-	//	compare user.password with re.password
+	//	compare mysqluser.password with re.password
 
 }

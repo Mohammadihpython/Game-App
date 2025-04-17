@@ -29,18 +29,19 @@ func New(cfg Config) Service {
 type Claims struct {
 	UserID uint `json:"user_id"`
 	jwt.RegisteredClaims
+	Role entity.Role `json:"role"`
 }
 
 func (s Service) CreateAccessToken(user entity.User) (string, error) {
-	return s.createToken(user.ID, s.config.AccessExpirationTime, s.config.AccessSubject)
+	return s.createToken(user.ID, user.Role, s.config.AccessExpirationTime, s.config.AccessSubject)
 
 }
 func (s Service) CreateRefreshToken(user entity.User) (string, error) {
-	return s.createToken(user.ID, s.config.RefreshExpirationTime, s.config.RefreshSubject)
+	return s.createToken(user.ID, user.Role, s.config.RefreshExpirationTime, s.config.RefreshSubject)
 
 }
 
-func (s Service) createToken(userID uint, expireDuration time.Duration, subject string) (string, error) {
+func (s Service) createToken(userID uint, role entity.Role, expireDuration time.Duration, subject string) (string, error) {
 	// create a signer for rsa 256
 	// TODO : replace with rsa 256 RS256
 	claims := Claims{
@@ -49,6 +50,7 @@ func (s Service) createToken(userID uint, expireDuration time.Duration, subject 
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expireDuration)),
 		},
 		UserID: userID,
+		Role:   role,
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	accessTokenString, err := accessToken.SignedString([]byte(s.config.SignKey))

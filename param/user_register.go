@@ -8,7 +8,7 @@ type RegisterRequest struct {
 	Password    string `json:"password"`
 }
 type RegisterResponse struct {
-	User entity.User `json:"user"`
+	User entity.User `json:"mysqluser"`
 }
 
 type UserInfo struct {

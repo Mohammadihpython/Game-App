@@ -1,8 +1,8 @@
 package userHandler
 
 import (
-	"GameApp/constant"
 	"GameApp/param"
+	"GameApp/pkg/cliam"
 	"GameApp/pkg/httpmsg"
 	"GameApp/pkg/richerror"
 	"GameApp/service/authservice"
@@ -85,22 +85,9 @@ func (h Handler) userLogin(c echo.Context) error {
 
 }
 
-func getClaims(c echo.Context) *authservice.Claims {
-	claims := c.Get(constant.AuthMiddlewareContextKey)
-
-	//	convert claims object to authService claims object
-	cl, ok := claims.(*authservice.Claims)
-	if !ok {
-		panic("not found claims")
-
-	}
-	return cl
-
-}
-
 func (h Handler) userProfile(c echo.Context) error {
 
-	claims := getClaims(c)
+	claims := cliam.GetClaims(c)
 	res, err := h.userSvc.Profile(param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError,

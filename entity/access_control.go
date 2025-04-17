@@ -13,5 +13,5 @@ type ActorType string
 
 const (
 	RoleActorType = "role"
-	UserActorType = "user"
+	UserActorType = "mysqluser"
 )

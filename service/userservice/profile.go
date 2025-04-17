@@ -7,7 +7,7 @@ import (
 )
 
 func (s Service) Profile(req param.ProfileRequest) (param.ProfileResponse, error) {
-	// get user by ID
+	// get mysqluser by ID
 	user, err := s.repo.GetUserByID(req.UserID)
 	if err != nil {
 		//I have not expected the repository call return

@@ -1,4 +1,4 @@
-package accesscontrol
+package mysqlaccesscontrol
 
 import (
 	"GameApp/entity"
@@ -8,17 +8,13 @@ import (
 	"strings"
 )
 
-func (d *db) GetUserPermissionTitles(userID uint) ([]entity.PermissionTitle, error) {
-	const op = "mysql.GetUserPermissionTitles"
-	//	get user
-	user, err := d.GetUserByID(userID)
-	if err != nil {
-		return nil, richerror.New(op).WithWrappedError(err)
+func (d *DB) GetUserPermissionTitles(userID uint, role entity.Role) ([]entity.PermissionTitle, error) {
 
-	}
+	const op = "mysql.GetUserPermissionTitles"
+
 	roleACL := make([]entity.AccessControl, 0)
 
-	rows, err := d.db.Query("SELECT * FROM access_control WHERE actor_type= 'role' and actor_id=?", user.Role)
+	rows, err := d.conn.Conn().Query("SELECT * FROM access_control WHERE actor_type= 'role' and actor_id=?", role)
 	if err != nil {
 		return nil, richerror.New(op).WithWrappedError(err).
 			WithKind(richerror.KindUnexpected).
@@ -41,7 +37,7 @@ func (d *db) GetUserPermissionTitles(userID uint) ([]entity.PermissionTitle, err
 	}
 
 	userACL := make([]entity.AccessControl, 0)
-	userRows, err := d.db.Query("SELECT * FROM access_control WHERE actor_type= 'user' and actor_id=?", user.ID)
+	userRows, err := d.conn.Conn().Query(`SELECT * FROM access_control WHERE actor_type= 'mysqluser' and actor_id=?`, userID)
 	if err != nil {
 		return nil, richerror.New(op).WithWrappedError(err).
 			WithKind(richerror.KindUnexpected).
@@ -80,7 +76,7 @@ func (d *db) GetUserPermissionTitles(userID uint) ([]entity.PermissionTitle, err
 	for i, id := range permissionIDs {
 		args[i] = id
 	}
-	rows, err = d.db.Query(
+	rows, err = d.conn.Conn().Query(
 		"select * from permission where id in (?"+strings.Repeat(",?", len(permissionIDs)-1)+")", args...)
 	if err != nil {
 		return nil, richerror.New(op).WithWrappedError(err)
