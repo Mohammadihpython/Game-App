@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"fmt"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/env"
@@ -14,6 +15,7 @@ func Load() Config {
 
 	//	 load default values using the confmap provider
 	// A nested map can be loaded by setting the delimiter to an empty ""
+	fmt.Println()
 	k.Load(confmap.Provider(defaultConfig, "."), nil)
 
 	// Load Yaml config  and Merge it
@@ -34,6 +36,7 @@ func Load() Config {
 	if err := k.Unmarshal("", &cfg); err != nil {
 		panic(err)
 	}
+	fmt.Println(cfg)
 
 	return cfg
 }

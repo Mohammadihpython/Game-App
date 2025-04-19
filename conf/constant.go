@@ -8,4 +8,5 @@ const (
 	RefreshExpirationTime = time.Hour * 24 * 7
 	AccessSubject         = "at"
 	RefreshSubject        = "rt"
+	WaitingTimeout        = time.Minute * 5
 )

@@ -4,10 +4,14 @@ type: yml
 auth:
   sign_key: "Hmdsfksdf"
 
+
 mysql:
   host: localhost
   port: 3308
-  db_name: game_db
+  dbname: gameappDB
+  username: Hamed
+  password:  hmah8013
+
 
 
 redis:

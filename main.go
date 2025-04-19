@@ -22,7 +22,7 @@ import (
 func main() {
 	fmt.Println("start Echo server")
 	cfg := conf.Load()
-
+	fmt.Println(cfg)
 	// TODO add command for migrations to dont run automatically
 	mgr := migrator.New(cfg.Mysql)
 	mgr.Up()
