@@ -2,6 +2,19 @@ version: '3.8'
 
 
 services:
+  gameapp-redis:
+    image: bitnami/redis:6.2
+    container_name: gameapp-redis
+    restart: always
+    ports:
+      - '6380:6379'
+    # TODO - remove `--save "" --appendonly no` from command to persist data
+    command: redis-server --loglevel warning --protected-mode no --save "" --appendonly no
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - gameapp-redis-data:/data
+
   database:
     image: mysql:8.0
     ports:
@@ -13,7 +26,7 @@ services:
 
 
     environment:
-      MYSQL_ROOT_PASSWORD: hmah8013
+      MY   SQL_ROOT_PASSWORD: hmah8013
       MYSQL_DATABASE: gameappDB
       MYSQL_USER: Hamed
       MYSQL_PASSWORD: hmah8013
@@ -21,3 +34,5 @@ services:
 
 volumes:
   db:
+
+  gameapp-redis-data:

@@ -9,15 +9,12 @@ import (
 	"strings"
 )
 
-func Load() *Config {
+func Load() Config {
 	var k = koanf.New(".")
 
 	//	 load default values using the confmap provider
 	// A nested map can be loaded by setting the delimiter to an empty ""
-	k.Load(confmap.Provider(map[string]interface{}{
-		"auth.refresh_subject": RefreshSubject,
-		"auth.access_subject":  AccessSubject,
-	}, "."), nil)
+	k.Load(confmap.Provider(defaultConfig, "."), nil)
 
 	// Load Yaml config  and Merge it
 	k.Load(file.Provider("config.yml"), yaml.Parser())
@@ -38,5 +35,5 @@ func Load() *Config {
 		panic(err)
 	}
 
-	return &cfg
+	return cfg
 }

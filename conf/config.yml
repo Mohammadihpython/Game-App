@@ -2,7 +2,7 @@
 ---
 type: yml
 auth:
-  sign_key: hello
+  sign_key: "Hmdsfksdf"
 
 mysql:
   host: localhost
@@ -10,3 +10,11 @@ mysql:
   db_name: game_db
 
 
+redis:
+  port: 6380
+  host: localhost
+  db: 0
+  password: ""
+
+matchingservice:
+  waiting_timeout: "2m"
