@@ -22,6 +22,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"os"
 	"os/signal"
+	"sync"
 )
 
 func main() {
@@ -34,15 +35,16 @@ func main() {
 	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV := setupServices(cfg)
 
 	var httpServer *echo.Echo
+	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV)
 	go func() {
-		server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV)
-		httpServer = server.Serve()
+		server.Serve()
 	}()
 	done := make(chan bool)
-
+	var wg sync.WaitGroup
 	go func() {
-		sch := scheduler.New()
-		sch.Start(done)
+		sch := scheduler.New(matchingSVC)
+		wg.Add(1)
+		sch.Start(done, &wg)
 	}()
 
 	quit := make(chan os.Signal, 1)
@@ -57,6 +59,8 @@ func main() {
 	fmt.Println("close server")
 	done <- true
 	<-ctx.Done()
+
+	wg.Wait()
 
 }
 

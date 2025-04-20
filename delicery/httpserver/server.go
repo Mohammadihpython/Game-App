@@ -33,7 +33,6 @@ func New(cfg conf.Config,
 	backOfficeUseSVC backofficeuserservice.Service,
 	matchingSVC matchingservice.Service,
 	matchingValidator matchingsvalidator.Validator,
-	Router *echo.Echo,
 
 ) Server {
 	fmt.Println(cfg)

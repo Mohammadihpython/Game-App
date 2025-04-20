@@ -18,7 +18,6 @@ import (
 	"GameApp/validator/uservalidator"
 	"context"
 	"fmt"
-	"github.com/labstack/echo/v4"
 	"os"
 	"os/signal"
 	"time"
@@ -33,7 +32,7 @@ func main() {
 	mgr.Up()
 	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV := setupServices(cfg)
 
-	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV, &echo.Echo{})
+	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV)
 
 	go func() {
 		server.Serve()
