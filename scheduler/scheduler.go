@@ -22,6 +22,7 @@ func (s Scheduler) Start(done <-chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 	s.sch.Every(5).Second().Do(s.MatchWaitedUsers)
 	s.sch.StartBlocking()
+
 	<-done
 	//wait to finish job
 	fmt.Println("stop scheduler....")
@@ -34,6 +35,6 @@ func (s Scheduler) MatchWaitedUsers() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(resp)
+	fmt.Println(time.Now().Format("2006-01-02 15:04:05"), resp)
 	//
 }

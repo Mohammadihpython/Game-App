@@ -89,6 +89,7 @@ func (h Handler) userProfile(c echo.Context) error {
 
 	claims := cliam.GetClaims(c)
 	// send context to handle and notify to other services when the context is close other services don't do anything's
+	// اینحا ما کانتکست رو میگیریم از اکو که همان کانتکست گولنگ هست و به توابع پایین تر پاس میدهیم
 	ctx := c.Request().Context()
 	res, err := h.userSvc.Profile(ctx, param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {

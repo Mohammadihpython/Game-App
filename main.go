@@ -19,7 +19,6 @@ import (
 	"GameApp/validator/uservalidator"
 	"context"
 	"fmt"
-	"github.com/labstack/echo/v4"
 	"os"
 	"os/signal"
 	"sync"
@@ -34,7 +33,6 @@ func main() {
 	mgr.Up()
 	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV := setupServices(cfg)
 
-	var httpServer *echo.Echo
 	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV)
 	go func() {
 		server.Serve()
@@ -47,17 +45,21 @@ func main() {
 		sch.Start(done, &wg)
 	}()
 
+	// تابع signal وفتی دستور بستن برنامه میاد اون رو داخل چنل میریزه
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
+	// اینحا ما یک کانتکس میساریم و وقتی برتامه میخواد بسته بشه به بقیه سرویس ها اطلاع میدهد
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.Application.GracefulShutdownTimeout)
 	defer cancel()
-	if err := httpServer.Shutdown(ctx); err != nil {
+	if err := server.Router.Shutdown(ctx); err != nil {
 		fmt.Println("shutdown server error:", err)
 	}
 
 	fmt.Println("close server")
+	// اینجا با پر کردن جنل done اسکژولز های خودمون میکیم که کار بسته تمومش کن
 	done <- true
+	// اینجا یا کاری نداره و بسته میشه یا تایم ان درخواست تمام میشه
 	<-ctx.Done()
 
 	wg.Wait()
