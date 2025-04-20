@@ -3,12 +3,13 @@ package userservice
 import (
 	"GameApp/param"
 	"GameApp/pkg/richerror"
+	"context"
 	"fmt"
 )
 
-func (s Service) Profile(req param.ProfileRequest) (param.ProfileResponse, error) {
+func (s Service) Profile(ctx context.Context, req param.ProfileRequest) (param.ProfileResponse, error) {
 	// get mysqluser by ID
-	user, err := s.repo.GetUserByID(req.UserID)
+	user, err := s.repo.GetUserByID(ctx, req.UserID)
 	if err != nil {
 		//I have not expected the repository call return
 		//"record not found" error,

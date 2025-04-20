@@ -4,6 +4,8 @@ type: yml
 auth:
   sign_key: "Hmdsfksdf"
 
+http_server:
+  port: 8080
 
 mysql:
   host: localhost

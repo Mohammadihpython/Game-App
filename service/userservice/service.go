@@ -2,12 +2,13 @@ package userservice
 
 import (
 	"GameApp/entity"
+	"context"
 )
 
 type Repository interface {
 	RegisterUser(u entity.User) (entity.User, error)
 	GetUserByPhone(phoneNumber string) (entity.User, error)
-	GetUserByID(userID uint) (entity.User, error)
+	GetUserByID(ctx context.Context, userID uint) (entity.User, error)
 }
 
 type AuthService interface {

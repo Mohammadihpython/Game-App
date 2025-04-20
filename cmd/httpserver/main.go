@@ -9,7 +9,6 @@ import (
 	"GameApp/repository/mysql/mysqlaccesscontrol"
 	"GameApp/repository/mysql/mysqluser"
 	"GameApp/repository/redis/redismatching"
-	"GameApp/scheduler"
 	"GameApp/service/authorizationservice"
 	"GameApp/service/authservice"
 	"GameApp/service/backofficeuserservice"
@@ -22,6 +21,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"os"
 	"os/signal"
+	"time"
 )
 
 func main() {
@@ -33,30 +33,24 @@ func main() {
 	mgr.Up()
 	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV := setupServices(cfg)
 
-	var httpServer *echo.Echo
-	go func() {
-		server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV)
-		httpServer = server.Serve()
-	}()
-	done := make(chan bool)
+	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV, &echo.Echo{})
 
 	go func() {
-		sch := scheduler.New()
-		sch.Start(done)
+		server.Serve()
 	}()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
+
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.Application.GracefulShutdownTimeout)
 	defer cancel()
-	if err := httpServer.Shutdown(ctx); err != nil {
+	if err := server.Router.Shutdown(ctx); err != nil {
 		fmt.Println("shutdown server error:", err)
 	}
-
 	fmt.Println("close server")
-	done <- true
 	<-ctx.Done()
+	time.Sleep(5 * time.Second)
 
 }
 

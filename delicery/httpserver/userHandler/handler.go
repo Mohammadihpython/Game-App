@@ -88,7 +88,9 @@ func (h Handler) userLogin(c echo.Context) error {
 func (h Handler) userProfile(c echo.Context) error {
 
 	claims := cliam.GetClaims(c)
-	res, err := h.userSvc.Profile(param.ProfileRequest{UserID: claims.UserID})
+	// send context to handle and notify to other services when the context is close other services don't do anything's
+	ctx := c.Request().Context()
+	res, err := h.userSvc.Profile(ctx, param.ProfileRequest{UserID: claims.UserID})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError,
 			richerror.New("httpserver.userProfile").

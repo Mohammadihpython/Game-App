@@ -4,6 +4,7 @@ import (
 	"GameApp/entity"
 	"GameApp/pkg/richerror"
 	"GameApp/repository/mysql"
+	"context"
 	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
@@ -52,8 +53,10 @@ func (d *DB) GetUserByPhone(phone_number string) (entity.User, error) {
 	return user, nil
 }
 
-func (d *DB) GetUserByID(userid uint) (entity.User, error) {
-	row := d.conn.Conn().QueryRow("SELECT * FROM users WHERE id = ?", userid)
+func (d *DB) GetUserByID(ctx context.Context, userid uint) (entity.User, error) {
+
+	// we use QueryRowContext to know if the context is close we do not query
+	row := d.conn.Conn().QueryRowContext(ctx, "SELECT * FROM users WHERE id = ?", userid)
 	user, err := scanRow(row)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
