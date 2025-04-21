@@ -9,6 +9,7 @@ import (
 	"GameApp/service/authservice"
 	"GameApp/service/backofficeuserservice"
 	"GameApp/service/matchingservice"
+	"GameApp/service/presenceservice"
 	"GameApp/service/userservice"
 	"GameApp/validator/matchingsvalidator"
 	"GameApp/validator/uservalidator"
@@ -33,14 +34,15 @@ func New(cfg conf.Config,
 	backOfficeUseSVC backofficeuserservice.Service,
 	matchingSVC matchingservice.Service,
 	matchingValidator matchingsvalidator.Validator,
+	presenceSVC presenceservice.Service,
 
 ) Server {
 	fmt.Println(cfg)
 	return Server{
 		config:                cfg,
-		userHandler:           userHandler.New(cfg.Auth, authSvc, userSvc, validator, cfg.Auth.SignKey),
+		userHandler:           userHandler.New(cfg.Auth, authSvc, userSvc, validator, cfg.Auth.SignKey, presenceSVC),
 		backofficeUserHandler: backofficeuserhandler.New(cfg.Auth, authSvc, authorizationSvc, backOfficeUseSVC),
-		matchingHandler:       matchinghandler.New(cfg.Auth, authSvc, matchingSVC, matchingValidator),
+		matchingHandler:       matchinghandler.New(cfg.Auth, authSvc, matchingSVC, matchingValidator, presenceSVC),
 		Router:                echo.New(),
 	}
 }

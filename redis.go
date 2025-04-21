@@ -1,9 +1,9 @@
 package main
 
 import (
+	"GameApp/pkg/timestamp"
 	"context"
 	"github.com/redis/go-redis/v9"
-	"time"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	})
 	var ctx = context.Background()
 	rdb.ZAdd(ctx, "footbal", redis.Z{
-		Score: float64(time.Now().UnixMicro()),
+		Score: float64(timestamp.Now()),
 	})
 
 }

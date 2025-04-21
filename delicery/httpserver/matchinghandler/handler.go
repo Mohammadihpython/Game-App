@@ -6,6 +6,7 @@ import (
 	"GameApp/pkg/richerror"
 	"GameApp/service/authservice"
 	"GameApp/service/matchingservice"
+	"GameApp/service/presenceservice"
 	"GameApp/validator/matchingsvalidator"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -17,16 +18,19 @@ type Handler struct {
 	authSVC     authservice.Service
 	matchingSVC matchingservice.Service
 	validator   matchingsvalidator.Validator
+	presenceSVC presenceservice.Service
 }
 
 func New(authConfig authservice.Config,
 	authSVC authservice.Service,
 	matchingSVC matchingservice.Service,
-	validator matchingsvalidator.Validator) Handler {
+	validator matchingsvalidator.Validator,
+	presenceSVC presenceservice.Service) Handler {
 	return Handler{authConfig,
 		authSVC,
 		matchingSVC,
-		validator}
+		validator,
+		presenceSVC}
 }
 
 func (h Handler) AddToWaitingList(c echo.Context) error {
