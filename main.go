@@ -93,10 +93,9 @@ func setupServices(cfg conf.Config) (
 
 	authorizationSvc := authorizationservice.New(aclMysql)
 
-	// we must create an redis client and pass it to matching service
+	// we must create a redis client and pass it to matching service
 
 	redisAdaptor := redis.New(cfg.Redis)
-
 	matcingv := matchingsvalidator.New()
 
 	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
@@ -104,7 +103,7 @@ func setupServices(cfg conf.Config) (
 
 	presenceRepo := redispresence.New(redisAdaptor)
 
-	presencSVC := presenceservice.New(cfg.Presence, presenceRepo)
+	presenceSVC := presenceservice.New(cfg.Presence, presenceRepo)
 
-	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matcingv, presencSVC
+	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matcingv, presenceSVC
 }

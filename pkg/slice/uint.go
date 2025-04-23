@@ -9,3 +9,11 @@ func DoseExist(list []uint, value uint) bool {
 	return false
 
 }
+
+func MapFromUint64ToUint(list []uint64) []uint {
+	result := make([]uint, len(list))
+	for i, item := range list {
+		result[i] = uint(item)
+	}
+	return result
+}

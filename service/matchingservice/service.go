@@ -16,6 +16,8 @@ type Repo interface {
 	GetWaitingListByCategory(ctx context.Context, category entity.Category) ([]entity.WaitingMember, error)
 	AddToWaitingList(UserID uint, category entity.Category) error
 }
+
+// PresenceClient We use Grpc call to get presence
 type PresenceClient interface {
 	GetPresence(ctx context.Context, request param.GetPresenceRequest) (param.GetPresenceResponse, error)
 }
