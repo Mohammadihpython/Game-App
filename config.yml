@@ -11,6 +11,9 @@ presence_service:
   presence_expire_time: "60m"
   presence_prefix: "presence"
 
+redis_matching:
+  waiting_list_prefix: "waiting_prefix"
+
 
 mysql:
   host: localhost

@@ -3,6 +3,7 @@ package conf
 import (
 	"GameApp/adaptor/adaptor/redis"
 	"GameApp/repository/mysql"
+	"GameApp/repository/redis/redismatching"
 	"GameApp/scheduler"
 	"GameApp/service/authservice"
 	"GameApp/service/matchingservice"
@@ -27,4 +28,5 @@ type Config struct {
 	Redis           redis.Config           `koanf:"redis"`
 	Presence        presenceservice.Config `koanf:"presence_service"`
 	Scheduler       scheduler.Config       `koanf:"scheduler"`
+	RedisMatching   redismatching.Config   `koanf:"redis_matching"`
 }

@@ -99,7 +99,7 @@ func setupServices(cfg conf.Config) (
 
 	matcingv := matchingsvalidator.New()
 
-	matcingRepo := redismatching.New(redisAdaptor)
+	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
 	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo)
 
 	presenceRepo := redispresence.New(redisAdaptor)

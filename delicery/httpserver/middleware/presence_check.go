@@ -26,7 +26,10 @@ func UpsertPresence(service presenceservice.Service) echo.MiddlewareFunc {
 					"message": err.Error(),
 				})
 			}
+			return next(c)
 
 		}
+
 	}
+
 }
