@@ -16,3 +16,15 @@ func MapGetPresenceResponseToProtobuf(g param.GetPresenceResponse) *presence.Get
 	}
 	return r
 }
+
+func MapGetPresenceResponseFromProtobuf(g *presence.GetPresenceResponse) param.GetPresenceResponse {
+	r := param.GetPresenceResponse{}
+
+	for _, item := range g.Items {
+		r.Items = append(r.Items, param.GetPresenceItem{
+			UserID:    uint(item.UserId),
+			Timestamp: item.Timestamp,
+		})
+	}
+	return r
+}

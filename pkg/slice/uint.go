@@ -17,3 +17,11 @@ func MapFromUint64ToUint(list []uint64) []uint {
 	}
 	return result
 }
+
+func MapFromUintToUint64(list []uint) []uint64 {
+	result := make([]uint64, len(list))
+	for i, item := range list {
+		result[i] = uint64(item)
+	}
+	return result
+}

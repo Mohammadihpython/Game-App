@@ -1,6 +1,7 @@
 package main
 
 import (
+	presenceClient "GameApp/adaptor/adaptor/presence"
 	"GameApp/adaptor/adaptor/redis"
 	"GameApp/conf"
 	"GameApp/delicery/httpserver"
@@ -21,6 +22,8 @@ import (
 	"GameApp/validator/uservalidator"
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"os"
 	"os/signal"
 	"sync"
@@ -33,9 +36,16 @@ func main() {
 	// TODO add command for migrations to dont run automatically
 	mgr := migrator.New(cfg.Mysql)
 	mgr.Up()
-	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV, presencSVC := setupServices(cfg)
 
-	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV, presencSVC)
+	PresenceGrpcConn, err := grpc.NewClient(":8070", grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	if err != nil {
+		panic(err)
+	}
+	defer PresenceGrpcConn.Close()
+	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV, presenceSVC := setupServices(cfg, PresenceGrpcConn)
+
+	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV, presenceSVC)
 	go func() {
 		server.Serve()
 	}()
@@ -68,7 +78,7 @@ func main() {
 
 }
 
-func setupServices(cfg conf.Config) (
+func setupServices(cfg conf.Config, PresenceGrpcConn *grpc.ClientConn) (
 	userservice.Service,
 	authservice.Service,
 	uservalidator.Validator,
@@ -99,7 +109,9 @@ func setupServices(cfg conf.Config) (
 	matcingv := matchingsvalidator.New()
 
 	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
-	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo)
+
+	presenceSClient := presenceClient.New(PresenceGrpcConn)
+	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo, presenceSClient)
 
 	presenceRepo := redispresence.New(redisAdaptor)
 
