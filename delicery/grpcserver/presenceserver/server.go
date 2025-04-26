@@ -40,13 +40,12 @@ func (s Server) Start() {
 	if err != nil {
 		panic(err)
 	}
-	// pbPresence server
-	presenceSVCServer := Server{}
+
 	//grpc server
 	grpcServer := grpc.NewServer()
 
-	// pbpresenceserver register into grpc server
-	presence.RegisterPresenceServiceServer(grpcServer, &presenceSVCServer)
+	// pb presence server register into grpc server
+	presence.RegisterPresenceServiceServer(grpcServer, &s)
 	//	server grpcServer by listener
 	if err := grpcServer.Serve(listner); err != nil {
 		log.Fatal("Could not start gRPC server")
