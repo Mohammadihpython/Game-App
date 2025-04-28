@@ -6,6 +6,7 @@ import (
 	"GameApp/pkg/timestamp"
 	"context"
 	"fmt"
+	"github.com/labstack/gommon/log"
 	"github.com/redis/go-redis/v9"
 	"strconv"
 	"time"
@@ -16,7 +17,7 @@ func (d DB) AddToWaitingList(userID uint, category entity.Category) error {
 
 	_, err := d.adaptor.Client().ZAdd(
 		context.Background(),
-		fmt.Sprintf("&s:%s", d.config.WaitingListPrefix, category),
+		fmt.Sprintf("&%s:%s", d.config.WaitingListPrefix, category),
 		redis.Z{
 			Score:  float64(timestamp.Now()),
 			Member: fmt.Sprintf("%d", userID),
@@ -57,4 +58,21 @@ func (d DB) GetWaitingListByCategory(ctx context.Context, category entity.Catego
 
 func (d DB) getCategory(category entity.Category) string {
 	return fmt.Sprintf("%s:%s", d.config.WaitingListPrefix, category)
+}
+
+func (d DB) RemoveUsersFromWaitingList(userID []uint, category entity.Category) {
+	ctx, cansel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cansel()
+	members := make([]any, 0)
+	for _, u := range userID {
+		members = append(members, fmt.Sprintf("%d", u))
+	}
+	numberOfRemoved, err := d.adaptor.Client().ZRem(ctx, d.getCategory(category), members...).Result()
+	if err != nil {
+		log.Errorf("remove from waiting list error: %s", err.Error())
+		// TODO update metrics
+	}
+	log.Printf("remove from waiting list: %d", numberOfRemoved)
+	//	 TODO update metric
+	return
 }

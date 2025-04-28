@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"GameApp/adaptor/adaptor/redis"
+	"GameApp/adaptor/redis"
 	"GameApp/repository/mysql"
 	"GameApp/repository/redis/redismatching"
 	"GameApp/scheduler"

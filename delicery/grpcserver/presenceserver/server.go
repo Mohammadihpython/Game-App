@@ -1,9 +1,9 @@
 package presenceserver
 
 import (
-	"GameApp/contract/golang/presence"
+	"GameApp/contract/goproto/presence"
 	"GameApp/param"
-	"GameApp/pkg/protobuf"
+	"GameApp/pkg/protobufMapper"
 	"GameApp/pkg/slice"
 	"GameApp/service/presenceservice"
 	"context"
@@ -30,7 +30,7 @@ func (s Server) GetPresence(ctx context.Context, req *presence.GetPresenceReques
 	}
 	fmt.Println(res)
 
-	return protobuf.MapGetPresenceResponseToProtobuf(res), nil
+	return protobufMapper.MapGetPresenceResponseToProtobuf(res), nil
 
 }
 

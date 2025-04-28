@@ -34,3 +34,13 @@ Compile protoc buf to golang
 protoc --go_out=. \
     --go-grpc_out=. \
     contract/matching/matching.proto
+
+
+
+/// For Go to Shell of docker container
+docker compose exec app_name bash
+
+
+
+mysql -u name -p
+

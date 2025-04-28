@@ -7,8 +7,8 @@
 package presence
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "google.goproto.org/protobuf/reflect/protoreflect"
+	protoimpl "google.goproto.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -23,7 +23,7 @@ const (
 
 type GetPresenceRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserIds       []uint64               `protobuf:"varint,1,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
+	UserIds       []uint64               `protobufMapper:"varint,1,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -67,7 +67,7 @@ func (x *GetPresenceRequest) GetUserIds() []uint64 {
 
 type GetPresenceResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Items         []*GetPresenceItem     `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Items         []*GetPresenceItem     `protobufMapper:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -111,8 +111,8 @@ func (x *GetPresenceResponse) GetItems() []*GetPresenceItem {
 
 type GetPresenceItem struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Timestamp     int64                  `protobuf:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	UserId        uint64                 `protobufMapper:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Timestamp     int64                  `protobufMapper:"varint,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -174,7 +174,7 @@ const file_contract_presence_presence_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12\x1c\n" +
 	"\ttimestamp\x18\x02 \x01(\x03R\ttimestamp2]\n" +
 	"\x0fPresenceService\x12J\n" +
-	"\vGetPresence\x12\x1c.presence.GetPresenceRequest\x1a\x1d.presence.GetPresenceResponseB\x1bZ\x19contract/golang/presence/b\x06proto3"
+	"\vGetPresence\x12\x1c.presence.GetPresenceRequest\x1a\x1d.presence.GetPresenceResponseB\x1bZ\x19contract/goproto/presence/b\x06proto3"
 
 var (
 	file_contract_presence_presence_proto_rawDescOnce sync.Once

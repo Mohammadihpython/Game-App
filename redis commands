@@ -1,0 +1,4 @@
+
+the ZADD data structure sort added users when their insert, by scores
+
+command : ZADD key  score member

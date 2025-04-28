@@ -1,9 +1,11 @@
 package redismatching
 
-import "GameApp/adaptor/adaptor/redis"
+import (
+	"GameApp/adaptor/redis"
+)
 
 type Config struct {
-	WaitingListPrefix string `koanf:"waiting_list_prefix"`
+	WaitingListPrefix string `koanf:"waiting_list"`
 }
 
 type DB struct {

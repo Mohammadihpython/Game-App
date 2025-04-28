@@ -1,7 +1,8 @@
 package main
 
 import (
-	"GameApp/adaptor/adaptor/redis"
+	presenceClient "GameApp/adaptor/presence"
+	"GameApp/adaptor/redis"
 	"GameApp/conf"
 	"GameApp/delicery/httpserver"
 	"GameApp/repository/migrator"
@@ -80,15 +81,18 @@ func setupServices(cfg conf.Config) (
 
 	authorizationSvc := authorizationservice.New(aclMysql)
 
-	// we must create an redis client and pass it to matching service
-	matcingv := matchingsvalidator.New()
+	// we must create a redis client and pass it to matching service
+	matchingv := matchingsvalidator.New()
 	redisAdaptor := redis.New(cfg.Redis)
-	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
-	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo)
+	matchingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
+
+	presenceAdaptor := presenceClient.New(":8086")
+
+	matchingSVC := matchingservice.New(cfg.MatchingService, matchingRepo, presenceAdaptor)
 
 	presenceRepo := redispresence.New(redisAdaptor)
 
 	presencSVC := presenceservice.New(cfg.Presence, presenceRepo)
 
-	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matcingv, presencSVC
+	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matchingv, presencSVC
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"GameApp/adaptor/adaptor/redis"
+	"GameApp/adaptor/redis"
 	"GameApp/conf"
 	"GameApp/delicery/grpcserver/presenceserver"
 	redispresence "GameApp/repository/redis/presence"

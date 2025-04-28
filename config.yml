@@ -23,7 +23,7 @@ mysql:
   password:  hmah8013
 
 scheduler:
-  match_waited_users_internal_in_seconds: 30
+  match_waited_users_internal_in_seconds: 2
 
 redis:
   port: 6380

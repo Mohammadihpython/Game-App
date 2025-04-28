@@ -1,8 +1,8 @@
 package main
 
 import (
-	presenceClient "GameApp/adaptor/adaptor/presence"
-	"GameApp/adaptor/adaptor/redis"
+	presenceClient "GameApp/adaptor/presence"
+	"GameApp/adaptor/redis"
 	"GameApp/conf"
 	"GameApp/delicery/httpserver"
 	"GameApp/repository/migrator"

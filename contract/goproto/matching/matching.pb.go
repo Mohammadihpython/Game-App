@@ -7,8 +7,8 @@
 package matching
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	protoreflect "google.goproto.org/protobuf/reflect/protoreflect"
+	protoimpl "google.goproto.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -23,8 +23,8 @@ const (
 
 type MatchedUsers struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Category      string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
-	UserIds       []uint64               `protobuf:"varint,2,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
+	Category      string                 `protobufMapper:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
+	UserIds       []uint64               `protobufMapper:"varint,2,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -80,7 +80,7 @@ const file_contract_matching_matching_proto_rawDesc = "" +
 	" contract/matching/matching.proto\x12\bmatching\"E\n" +
 	"\fMatchedUsers\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\x12\x19\n" +
-	"\buser_ids\x18\x02 \x03(\x04R\auserIdsB\x1bZ\x19contract/golang/matching/b\x06proto3"
+	"\buser_ids\x18\x02 \x03(\x04R\auserIdsB\x1bZ\x19contract/goproto/matching/b\x06proto3"
 
 var (
 	file_contract_matching_matching_proto_rawDescOnce sync.Once

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"GameApp/adaptor/adaptor/redis"
+	"GameApp/adaptor/redis"
 	"GameApp/conf"
-	"GameApp/contract/golang/matching"
+	"GameApp/contract/goproto/matching"
 	"GameApp/entity"
 	"GameApp/pkg/slice"
 	"context"

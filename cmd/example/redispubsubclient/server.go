@@ -1,15 +1,12 @@
 package main
 
 import (
-	"GameApp/adaptor/adaptor/redis"
+	"GameApp/adaptor/redis"
 	"GameApp/conf"
-	"GameApp/contract/golang/matching"
 	"GameApp/entity"
-	"GameApp/pkg/slice"
+	"GameApp/pkg/protobufEncoder"
 	"context"
-	"encoding/base64"
 	"fmt"
-	"google.golang.org/protobuf/proto"
 	"log"
 )
 
@@ -25,21 +22,15 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		}
-		payload, err := base64.StdEncoding.DecodeString(msg.Payload)
-		if err != nil {
-			log.Println(err)
 
+		payload := protobufEncoder.DecoderEvent(entity.MatchingUsersMatchedEvent, msg.Payload)
+		p, ok := payload.(entity.MatchedUsers)
+		if !ok {
+			// log the error
+			return
 		}
-		pbMu := matching.MatchedUsers{}
-		if err := proto.Unmarshal(payload, &pbMu); err != nil {
-			log.Println(err)
-		}
-		mu := entity.MatchedUsers{
-			Category: entity.Category(pbMu.Category),
-			UserIDs:  slice.MapFromUint64ToUint(pbMu.UserIds),
-		}
+		fmt.Println(p.Category, p.UserIDs)
 		fmt.Println("received message from " + msg.Channel + "channel.")
-		fmt.Println(mu)
 
 	}
 }

@@ -1,6 +1,8 @@
 package redispresence
 
-import "GameApp/adaptor/adaptor/redis"
+import (
+	"GameApp/adaptor/redis"
+)
 
 type DB struct {
 	adaptor redis.Adaptor

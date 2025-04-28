@@ -1,7 +1,7 @@
 package main
 
 import (
-	presenceClient "GameApp/adaptor/adaptor/presence"
+	presenceClient "GameApp/adaptor/presence"
 	"GameApp/param"
 	"context"
 	"fmt"
