@@ -72,7 +72,6 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 	// pre compute
 	fmt.Println("start job")
 	defer wg.Done()
-
 	list, err := s.repo.GetWaitingListByCategory(ctx, category)
 	fmt.Println(list, err)
 
