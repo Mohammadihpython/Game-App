@@ -43,7 +43,7 @@ func main() {
 		panic(err)
 	}
 	defer PresenceGrpcConn.Close()
-	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV, presenceSVC := setupServices(cfg, PresenceGrpcConn)
+	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV, presenceSVC := setupServices(cfg)
 
 	server := httpserver.New(cfg, authSvc, userSvc, userValidator, authorizationSVC, backofficeSVC, matchingSVC, matchingV, presenceSVC)
 	go func() {
@@ -78,7 +78,7 @@ func main() {
 
 }
 
-func setupServices(cfg conf.Config, PresenceGrpcConn *grpc.ClientConn) (
+func setupServices(cfg conf.Config) (
 	userservice.Service,
 	authservice.Service,
 	uservalidator.Validator,
@@ -110,8 +110,8 @@ func setupServices(cfg conf.Config, PresenceGrpcConn *grpc.ClientConn) (
 
 	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
 
-	presenceSClient := presenceClient.New(PresenceGrpcConn)
-	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo, presenceSClient)
+	presenceSClient := presenceClient.New(":8086")
+	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo, presenceSClient, redisAdaptor)
 
 	presenceRepo := redispresence.New(redisAdaptor)
 

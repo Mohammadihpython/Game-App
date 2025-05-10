@@ -30,11 +30,17 @@ sql-migrate down -env="production" -config=repository/mysql/dbconfig.yml -limit=
 
 
 Compile protoc buf to golang
+protoc --go_out=. \
+    --go-grpc_out=. \
+    contract/protobuf/presence/presence.proto
 
 protoc --go_out=. \
     --go-grpc_out=. \
-    contract/matching/matching.proto
+    contract/protobuf/matching/matching.proto
 
+protoc --go_out=. \
+    --go-grpc_out=. \
+    contract/protobuf/notification/notification.proto
 
 
 /// For Go to Shell of docker container
