@@ -1,7 +1,7 @@
 package matchinghandler
 
 import (
-	"GameApp/delicery/httpserver/middleware"
+	"GameApp/delivery/httpserver/middleware"
 	"github.com/labstack/echo/v4"
 )
 

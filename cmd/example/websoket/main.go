@@ -35,7 +35,6 @@ func readMessage(conn net.Conn, done chan<- bool) {
 	for {
 		msg, opCode, err := wsutil.ReadClientData(conn)
 		if err != nil {
-
 			log.Println(err)
 			done <- true
 			return

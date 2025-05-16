@@ -4,7 +4,7 @@ import (
 	presenceClient "GameApp/adaptor/presence"
 	"GameApp/adaptor/redis"
 	"GameApp/conf"
-	"GameApp/delicery/httpserver"
+	"GameApp/delivery/httpserver"
 	"GameApp/repository/migrator"
 	"GameApp/repository/mysql"
 	"GameApp/repository/mysql/mysqlaccesscontrol"

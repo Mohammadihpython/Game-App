@@ -2,15 +2,15 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.19.6
-// source: contract/presence/presence.proto
+// source: contract/protobuf/presence/presence.proto
 
 package presence
 
 import (
 	context "context"
-	grpc "google.goproto.org/grpc"
-	codes "google.goproto.org/grpc/codes"
-	status "google.goproto.org/grpc/status"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -117,5 +117,5 @@ var PresenceService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contract/presence/presence.proto",
+	Metadata: "contract/protobuf/presence/presence.proto",
 }

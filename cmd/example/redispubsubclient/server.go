@@ -23,13 +23,9 @@ func main() {
 			log.Println(err)
 		}
 
-		payload := protobufEncoder.DecoderEvent(entity.MatchingUsersMatchedEvent, msg.Payload)
-		p, ok := payload.(entity.MatchedUsers)
-		if !ok {
-			// log the error
-			return
-		}
-		fmt.Println(p.Category, p.UserIDs)
+		matchedUsers := protobufEncoder.DecoderEvent(entity.MatchingUsersMatchedEvent, msg.Payload)
+
+		fmt.Println(matchedUsers.Category, matchedUsers.UserIDs)
 		fmt.Println("received message from " + msg.Channel + "channel.")
 
 	}

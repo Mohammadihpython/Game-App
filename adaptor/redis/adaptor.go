@@ -8,7 +8,7 @@ import (
 type Config struct {
 	Host     string `koanf:"host"`
 	Password string `koanf:"password"`
-	Port     int    `koanf:"port"`
+	Port     string `koanf:"port"`
 	DB       int    `koanf:"db"`
 }
 
@@ -18,7 +18,7 @@ type Adaptor struct {
 
 func New(config Config) Adaptor {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", config.Host, config.Port),
+		Addr:     fmt.Sprintf("%s:%s", config.Host, config.Port),
 		Password: config.Password,
 		DB:       config.DB,
 	})

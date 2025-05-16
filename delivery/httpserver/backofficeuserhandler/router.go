@@ -1,7 +1,7 @@
 package backofficeuserhandler
 
 import (
-	"GameApp/delicery/httpserver/middleware"
+	"GameApp/delivery/httpserver/middleware"
 	"GameApp/entity"
 	"github.com/labstack/echo/v4"
 )

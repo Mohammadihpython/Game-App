@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (a Adaptor) Publish(event entity.Event, payload string) {
+func (a *Adaptor) Publish(event entity.Event, payload string) {
 	// TODO - add 1 to config
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
 	defer cancel()
@@ -17,6 +17,24 @@ func (a Adaptor) Publish(event entity.Event, payload string) {
 		// TODO - log
 		// TODO - update metrics
 	}
+
+	// TODO - update metrics
+}
+
+func (a *Adaptor) Consumer(event entity.Event) string {
+	// TODO - add 1 to config
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
+	defer cancel()
+
+	pubSub := a.client.Subscribe(ctx, string(event))
+	defer pubSub.Close()
+	ch := pubSub.Channel()
+	for msg := range ch {
+		return msg.Payload
+		// Process event: Initialize game session, notify players, etc.
+
+	}
+	return ""
 
 	// TODO - update metrics
 }

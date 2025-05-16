@@ -2,9 +2,9 @@ package httpserver
 
 import (
 	"GameApp/conf"
-	"GameApp/delicery/httpserver/backofficeuserhandler"
-	"GameApp/delicery/httpserver/matchinghandler"
-	"GameApp/delicery/httpserver/userHandler"
+	"GameApp/delivery/httpserver/backofficeuserhandler"
+	"GameApp/delivery/httpserver/matchinghandler"
+	"GameApp/delivery/httpserver/userHandler"
 	"GameApp/service/authorizationservice"
 	"GameApp/service/authservice"
 	"GameApp/service/backofficeuserservice"

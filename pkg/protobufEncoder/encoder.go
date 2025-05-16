@@ -37,12 +37,12 @@ func EncodeEvent(event entity.Event, data any) string {
 	}
 }
 
-func DecoderEvent(event entity.Event, data string) any {
+func DecoderEvent(event entity.Event, data string) entity.MatchedUsers {
 	payload, err := base64.StdEncoding.DecodeString(data)
 
 	if err != nil {
 		log.Println(err)
-		return nil
+		return entity.MatchedUsers{}
 	}
 
 	switch event {
@@ -55,7 +55,9 @@ func DecoderEvent(event entity.Event, data string) any {
 			Category: entity.Category(pbMu.Category),
 			UserIDs:  slice.MapFromUint64ToUint(pbMu.UserIds),
 		}
+	default:
+		return entity.MatchedUsers{}
+
 	}
-	return nil
 
 }

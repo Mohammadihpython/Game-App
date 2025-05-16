@@ -3,7 +3,7 @@ package main
 import (
 	"GameApp/adaptor/redis"
 	"GameApp/conf"
-	"GameApp/delicery/grpcserver/presenceserver"
+	"GameApp/delivery/grpcserver/presenceserver"
 	redispresence "GameApp/repository/redis/presence"
 	"GameApp/service/presenceservice"
 )

@@ -2,13 +2,13 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v3.19.6
-// source: contract/matching/matching.proto
+// source: contract/protobuf/matching/matching.proto
 
 package matching
 
 import (
-	protoreflect "google.goproto.org/protobuf/reflect/protoreflect"
-	protoimpl "google.goproto.org/protobuf/runtime/protoimpl"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -23,15 +23,15 @@ const (
 
 type MatchedUsers struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Category      string                 `protobufMapper:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
-	UserIds       []uint64               `protobufMapper:"varint,2,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
+	Category      string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
+	UserIds       []uint64               `protobuf:"varint,2,rep,packed,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *MatchedUsers) Reset() {
 	*x = MatchedUsers{}
-	mi := &file_contract_matching_matching_proto_msgTypes[0]
+	mi := &file_contract_protobuf_matching_matching_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +43,7 @@ func (x *MatchedUsers) String() string {
 func (*MatchedUsers) ProtoMessage() {}
 
 func (x *MatchedUsers) ProtoReflect() protoreflect.Message {
-	mi := &file_contract_matching_matching_proto_msgTypes[0]
+	mi := &file_contract_protobuf_matching_matching_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +56,7 @@ func (x *MatchedUsers) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchedUsers.ProtoReflect.Descriptor instead.
 func (*MatchedUsers) Descriptor() ([]byte, []int) {
-	return file_contract_matching_matching_proto_rawDescGZIP(), []int{0}
+	return file_contract_protobuf_matching_matching_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *MatchedUsers) GetCategory() string {
@@ -73,32 +73,32 @@ func (x *MatchedUsers) GetUserIds() []uint64 {
 	return nil
 }
 
-var File_contract_matching_matching_proto protoreflect.FileDescriptor
+var File_contract_protobuf_matching_matching_proto protoreflect.FileDescriptor
 
-const file_contract_matching_matching_proto_rawDesc = "" +
+const file_contract_protobuf_matching_matching_proto_rawDesc = "" +
 	"\n" +
-	" contract/matching/matching.proto\x12\bmatching\"E\n" +
+	")contract/protobuf/matching/matching.proto\x12\bmatching\"E\n" +
 	"\fMatchedUsers\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\x12\x19\n" +
-	"\buser_ids\x18\x02 \x03(\x04R\auserIdsB\x1bZ\x19contract/goproto/matching/b\x06proto3"
+	"\buser_ids\x18\x02 \x03(\x04R\auserIdsB\x1cZ\x1acontract/goproto/matching/b\x06proto3"
 
 var (
-	file_contract_matching_matching_proto_rawDescOnce sync.Once
-	file_contract_matching_matching_proto_rawDescData []byte
+	file_contract_protobuf_matching_matching_proto_rawDescOnce sync.Once
+	file_contract_protobuf_matching_matching_proto_rawDescData []byte
 )
 
-func file_contract_matching_matching_proto_rawDescGZIP() []byte {
-	file_contract_matching_matching_proto_rawDescOnce.Do(func() {
-		file_contract_matching_matching_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_contract_matching_matching_proto_rawDesc), len(file_contract_matching_matching_proto_rawDesc)))
+func file_contract_protobuf_matching_matching_proto_rawDescGZIP() []byte {
+	file_contract_protobuf_matching_matching_proto_rawDescOnce.Do(func() {
+		file_contract_protobuf_matching_matching_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_contract_protobuf_matching_matching_proto_rawDesc), len(file_contract_protobuf_matching_matching_proto_rawDesc)))
 	})
-	return file_contract_matching_matching_proto_rawDescData
+	return file_contract_protobuf_matching_matching_proto_rawDescData
 }
 
-var file_contract_matching_matching_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_contract_matching_matching_proto_goTypes = []any{
+var file_contract_protobuf_matching_matching_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_contract_protobuf_matching_matching_proto_goTypes = []any{
 	(*MatchedUsers)(nil), // 0: matching.MatchedUsers
 }
-var file_contract_matching_matching_proto_depIdxs = []int32{
+var file_contract_protobuf_matching_matching_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -106,26 +106,26 @@ var file_contract_matching_matching_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_contract_matching_matching_proto_init() }
-func file_contract_matching_matching_proto_init() {
-	if File_contract_matching_matching_proto != nil {
+func init() { file_contract_protobuf_matching_matching_proto_init() }
+func file_contract_protobuf_matching_matching_proto_init() {
+	if File_contract_protobuf_matching_matching_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_contract_matching_matching_proto_rawDesc), len(file_contract_matching_matching_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_contract_protobuf_matching_matching_proto_rawDesc), len(file_contract_protobuf_matching_matching_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_contract_matching_matching_proto_goTypes,
-		DependencyIndexes: file_contract_matching_matching_proto_depIdxs,
-		MessageInfos:      file_contract_matching_matching_proto_msgTypes,
+		GoTypes:           file_contract_protobuf_matching_matching_proto_goTypes,
+		DependencyIndexes: file_contract_protobuf_matching_matching_proto_depIdxs,
+		MessageInfos:      file_contract_protobuf_matching_matching_proto_msgTypes,
 	}.Build()
-	File_contract_matching_matching_proto = out.File
-	file_contract_matching_matching_proto_goTypes = nil
-	file_contract_matching_matching_proto_depIdxs = nil
+	File_contract_protobuf_matching_matching_proto = out.File
+	file_contract_protobuf_matching_matching_proto_goTypes = nil
+	file_contract_protobuf_matching_matching_proto_depIdxs = nil
 }
