@@ -9,7 +9,7 @@ import (
 
 type Config struct {
 	Host     string `koanf:"host"`
-	Port     int    `koanf:"port"`
+	Port     string `koanf:"port"`
 	Username string `koanf:"username"`
 	Password string `koanf:"password"`
 	DBName   string `koanf:"dbname"`
@@ -28,7 +28,7 @@ func New(cfg Config) *MYSQL {
 
 	db, err := sql.Open(
 		"mysql",
-		fmt.Sprintf("%s:%s@(%s:%d)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
+		fmt.Sprintf("%s:%s@(%s:%s)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
 	if err != nil {
 		panic(err)
 	}

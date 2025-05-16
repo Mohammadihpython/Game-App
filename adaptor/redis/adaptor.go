@@ -26,6 +26,6 @@ func New(config Config) Adaptor {
 
 }
 
-func (a *Adaptor) Client() *redis.Client {
+func (a Adaptor) Client() *redis.Client {
 	return a.client
 }

@@ -1,7 +1,7 @@
 
 services:
   gameapp-redis:
-    image: bitnami/redis:6.2
+    image: redis/redis-stack-server:latest
     container_name: gameapp-redis
     restart: always
     ports:

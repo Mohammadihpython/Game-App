@@ -111,6 +111,7 @@ func setupServices(cfg conf.Config) (
 	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
 
 	presenceSClient := presenceClient.New(":8086")
+
 	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo, presenceSClient, redisAdaptor)
 
 	presenceRepo := redispresence.New(redisAdaptor)

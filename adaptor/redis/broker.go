@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (a *Adaptor) Publish(event entity.Event, payload string) {
+func (a Adaptor) Publish(event entity.Event, payload string) {
 	// TODO - add 1 to config
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
 	defer cancel()
@@ -21,7 +21,7 @@ func (a *Adaptor) Publish(event entity.Event, payload string) {
 	// TODO - update metrics
 }
 
-func (a *Adaptor) Consumer(event entity.Event) string {
+func (a Adaptor) Consumer(event entity.Event) string {
 	// TODO - add 1 to config
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
 	defer cancel()

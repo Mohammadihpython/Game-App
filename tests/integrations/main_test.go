@@ -3,13 +3,17 @@ package integrations
 import (
 	"GameApp/adaptor/redis"
 	"GameApp/pkg/testhelper"
+	"GameApp/repository/mysql"
+	"database/sql"
 	"fmt"
 	"github.com/ory/dockertest/v3"
 	"os"
 	"testing"
 )
 
-var redisport string
+var RedisPort string
+var MysqlPort string
+var mysqlRepo *sql.DB
 
 func TestMain(m *testing.M) {
 	pool := testhelper.StartDockerPool()
@@ -29,8 +33,27 @@ func TestMain(m *testing.M) {
 			redisAdaptor.Client()
 			return nil
 		})
+	mysqlRes := testhelper.StartDockerInstance(pool, "mysql", "8.0", func(res *dockertest.Resource) error {
+		port := res.GetPort("3306/tcp")
+		fmt.Println("mysql port is:", port)
+		mysqlAdaptor := mysql.New(mysql.Config{
+			Host:     "localhost",
+			Port:     port,
+			Username: "hamed",
+			Password: "1234",
+			DBName:   "test_db",
+		})
+		mysqlRepo = mysqlAdaptor.Conn()
+		return nil
+	})
+	// اعمال مایگریشن ها بر روی دیتابیس
+	err := testhelper.RunMigrations(mysqlRepo, ".../repository/migrations/")
+	if err != nil {
+		fmt.Println(err)
+	}
+	MysqlPort = mysqlRes.GetPort("3307/tcp")
 	fmt.Println("redis port is:", redisRes)
-	redisport = redisRes.GetPort("6379/tcp")
+	RedisPort = redisRes.GetPort("6379/tcp")
 	exitCode := m.Run()
 	os.Exit(exitCode)
 
