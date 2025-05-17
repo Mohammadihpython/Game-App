@@ -121,8 +121,7 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 		// publish a new event for mu
 		payload := protobufEncoder.EncodeEvent(entity.MatchingUsersMatchedEvent, matchedUsers)
 		go s.pub.Publish(entity.MatchingUsersMatchedEvent, payload)
-		ppp := *s.pub
-
+		
 		matchedUsersTobeRemoved = append(matchedUsersTobeRemoved, userIDs...)
 	}
 

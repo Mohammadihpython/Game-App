@@ -34,6 +34,8 @@ func (s Server) GetPresence(ctx context.Context, req *presence.GetPresenceReques
 
 }
 
+// TODO add upsert gRPC call
+
 func (s Server) Start() {
 	// listener := tcp port
 	listner, err := net.Listen("tcp", fmt.Sprintf(":%d", 8070))

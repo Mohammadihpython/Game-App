@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,7 +20,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PresenceService_GetPresence_FullMethodName = "/presence.PresenceService/GetPresence"
+	PresenceService_GetPresence_FullMethodName    = "/presence.PresenceService/GetPresence"
+	PresenceService_UpsertPresence_FullMethodName = "/presence.PresenceService/UpsertPresence"
 )
 
 // PresenceServiceClient is the client API for PresenceService service.
@@ -27,6 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PresenceServiceClient interface {
 	GetPresence(ctx context.Context, in *GetPresenceRequest, opts ...grpc.CallOption) (*GetPresenceResponse, error)
+	UpsertPresence(ctx context.Context, in *UpsertPresenceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type presenceServiceClient struct {
@@ -47,11 +50,22 @@ func (c *presenceServiceClient) GetPresence(ctx context.Context, in *GetPresence
 	return out, nil
 }
 
+func (c *presenceServiceClient) UpsertPresence(ctx context.Context, in *UpsertPresenceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, PresenceService_UpsertPresence_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PresenceServiceServer is the server API for PresenceService service.
 // All implementations must embed UnimplementedPresenceServiceServer
 // for forward compatibility.
 type PresenceServiceServer interface {
 	GetPresence(context.Context, *GetPresenceRequest) (*GetPresenceResponse, error)
+	UpsertPresence(context.Context, *UpsertPresenceRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedPresenceServiceServer()
 }
 
@@ -64,6 +78,9 @@ type UnimplementedPresenceServiceServer struct{}
 
 func (UnimplementedPresenceServiceServer) GetPresence(context.Context, *GetPresenceRequest) (*GetPresenceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPresence not implemented")
+}
+func (UnimplementedPresenceServiceServer) UpsertPresence(context.Context, *UpsertPresenceRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpsertPresence not implemented")
 }
 func (UnimplementedPresenceServiceServer) mustEmbedUnimplementedPresenceServiceServer() {}
 func (UnimplementedPresenceServiceServer) testEmbeddedByValue()                         {}
@@ -104,6 +121,24 @@ func _PresenceService_GetPresence_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PresenceService_UpsertPresence_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpsertPresenceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PresenceServiceServer).UpsertPresence(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PresenceService_UpsertPresence_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PresenceServiceServer).UpsertPresence(ctx, req.(*UpsertPresenceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PresenceService_ServiceDesc is the grpc.ServiceDesc for PresenceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +149,10 @@ var PresenceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPresence",
 			Handler:    _PresenceService_GetPresence_Handler,
+		},
+		{
+			MethodName: "UpsertPresence",
+			Handler:    _PresenceService_UpsertPresence_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

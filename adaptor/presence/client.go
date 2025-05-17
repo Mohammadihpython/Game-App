@@ -32,3 +32,20 @@ func (c Client) GetPresence(ctx context.Context, request param.GetPresenceReques
 	}
 	return protobufMapper.MapGetPresenceResponseFromProtobuf(res), nil
 }
+
+func (c Client) Upsert(ctx context.Context, request param.UpsertPresenceRequest) (param.UpsertPresenceResponse, error) {
+	conn, err := grpc.NewClient(c.address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return param.UpsertPresenceResponse{}, err
+	}
+	defer conn.Close()
+	client := presence.NewPresenceServiceClient(conn)
+	_, err = client.UpsertPresence(ctx, &presence.UpsertPresenceRequest{
+		UserId:    uint64(request.UserID),
+		Timestamp: request.Timestamp,
+	})
+	if err != nil {
+		return param.UpsertPresenceResponse{}, err
+	}
+	return param.UpsertPresenceResponse{}, nil
+}

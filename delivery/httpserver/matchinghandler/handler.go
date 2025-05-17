@@ -1,12 +1,12 @@
 package matchinghandler
 
 import (
+	"GameApp/adaptor/presence"
 	"GameApp/param"
 	"GameApp/pkg/httpmsg"
 	"GameApp/pkg/richerror"
 	"GameApp/service/authservice"
 	"GameApp/service/matchingservice"
-	"GameApp/service/presenceservice"
 	"GameApp/validator/matchingsvalidator"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -14,23 +14,26 @@ import (
 )
 
 type Handler struct {
-	authConfig  authservice.Config
-	authSVC     authservice.Service
-	matchingSVC matchingservice.Service
-	validator   matchingsvalidator.Validator
-	presenceSVC presenceservice.Service
+	authConfig     authservice.Config
+	authSVC        authservice.Service
+	matchingSVC    matchingservice.Service
+	validator      matchingsvalidator.Validator
+	presenceClient presence.Client
 }
 
 func New(authConfig authservice.Config,
 	authSVC authservice.Service,
 	matchingSVC matchingservice.Service,
 	validator matchingsvalidator.Validator,
-	presenceSVC presenceservice.Service) Handler {
+	presenceClient presence.Client,
+
+) Handler {
 	return Handler{authConfig,
 		authSVC,
 		matchingSVC,
 		validator,
-		presenceSVC}
+		presenceCLient,
+	}
 }
 
 func (h Handler) AddToWaitingList(c echo.Context) error {
