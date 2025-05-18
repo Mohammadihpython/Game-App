@@ -1,12 +1,12 @@
 package userHandler
 
 import (
+	"GameApp/adaptor/presence"
 	"GameApp/param"
 	"GameApp/pkg/cliam"
 	"GameApp/pkg/httpmsg"
 	"GameApp/pkg/richerror"
 	"GameApp/service/authservice"
-	"GameApp/service/presenceservice"
 	"GameApp/service/userservice"
 	"GameApp/validator/uservalidator"
 	"fmt"
@@ -20,7 +20,7 @@ type Handler struct {
 	authSvc       authservice.Service
 	userSvc       userservice.Service
 	userValidator uservalidator.Validator
-	presenceSVC   presenceservice.Service
+	presenceSVC   presence.Client
 }
 
 func New(
@@ -29,10 +29,10 @@ func New(
 	userSvc userservice.Service,
 	userValidator uservalidator.Validator,
 	authSignKey string,
-	presenceSVC presenceservice.Service,
+	presenceClient presence.Client,
 
 ) Handler {
-	return Handler{authConfig: authConfig, authSvc: authSVC, userSvc: userSvc, userValidator: userValidator, SignKey: []byte(authSignKey), presenceSVC: presenceSVC}
+	return Handler{authConfig: authConfig, authSvc: authSVC, userSvc: userSvc, userValidator: userValidator, SignKey: []byte(authSignKey), presenceSVC: presenceClient}
 }
 
 func (h Handler) userRegister(c echo.Context) error {

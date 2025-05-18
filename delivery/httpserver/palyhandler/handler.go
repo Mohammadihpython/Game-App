@@ -33,10 +33,10 @@ func (h Handler) GameHandler(c echo.Context) error {
 	category := matchedUsers.Category
 	questions, err := h.QuestionSVC.GetQuestions(string(category), h.Config.questionLimit)
 	if err != nil {
-		richerror.New(OP).
+		return  richerror.New(OP).
 			WithWrappedError(err).
 			WithMessage("can not get Questions").
-			WithKind(richerror.KindInvalid),
+			WithKind(richerror.KindInvalid)
 	)
 
 

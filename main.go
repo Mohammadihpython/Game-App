@@ -9,14 +9,12 @@ import (
 	"GameApp/repository/mysql"
 	"GameApp/repository/mysql/mysqlaccesscontrol"
 	"GameApp/repository/mysql/mysqluser"
-	redispresence "GameApp/repository/redis/presence"
 	"GameApp/repository/redis/redismatching"
 	"GameApp/scheduler"
 	"GameApp/service/authorizationservice"
 	"GameApp/service/authservice"
 	"GameApp/service/backofficeuserservice"
 	"GameApp/service/matchingservice"
-	"GameApp/service/presenceservice"
 	"GameApp/service/userservice"
 	"GameApp/validator/matchingsvalidator"
 	"GameApp/validator/uservalidator"
@@ -34,7 +32,7 @@ func main() {
 	cfg := conf.Load()
 	fmt.Println(cfg)
 	// TODO add command for migrations to dont run automatically
-	mgr := migrator.New(cfg.Mysql)
+	mgr := migrator.New(cfg.Mysql, "repository/mysql/migrations/")
 	mgr.Up()
 
 	PresenceGrpcConn, err := grpc.NewClient(":8070", grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -110,11 +108,11 @@ func setupServices(cfg conf.Config) (
 
 	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
 
-	presenceSClient := presenceClient.New(":8086")
+	presenceSClient := presenceClient.New(":8086", grpc.DialOption(grpc.WithTransportCredentials(insecure.NewCredentials())))
 
 	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo, presenceSClient, redisAdaptor)
 
-	presenceC := presenceClient.New(":8086")
+	presenceC := presenceClient.New(":8086", grpc.DialOption(grpc.WithTransportCredentials(insecure.NewCredentials())))
 
 	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matcingv, presenceC
 

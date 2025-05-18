@@ -8,6 +8,7 @@ import (
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -19,10 +20,16 @@ func Load() Config {
 	k.Load(confmap.Provider(defaultConfig, "."), nil)
 
 	// Load Yaml config  and Merge it
-	absPath, _ := filepath.Abs("../../config.yml")
-	fmt.Println("Loading config from:", absPath)
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("Unable to get current file path")
+	}
+	baseDir := filepath.Dir(filename)
 
-	err := k.Load(file.Provider(absPath), yaml.Parser())
+	// Construct the path to config.yaml relative to the current file
+	configPath := filepath.Join(baseDir, "..", "config.yml")
+	fmt.Println(configPath)
+	err := k.Load(file.Provider(configPath), yaml.Parser())
 	if err != nil {
 		panic(err)
 	}

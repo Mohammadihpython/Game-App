@@ -1,6 +1,7 @@
 package httpserver
 
 import (
+	"GameApp/adaptor/presence"
 	"GameApp/conf"
 	"GameApp/delivery/httpserver/backofficeuserhandler"
 	"GameApp/delivery/httpserver/matchinghandler"
@@ -9,7 +10,6 @@ import (
 	"GameApp/service/authservice"
 	"GameApp/service/backofficeuserservice"
 	"GameApp/service/matchingservice"
-	"GameApp/service/presenceservice"
 	"GameApp/service/userservice"
 	"GameApp/validator/matchingsvalidator"
 	"GameApp/validator/uservalidator"
@@ -34,7 +34,7 @@ func New(cfg conf.Config,
 	backOfficeUseSVC backofficeuserservice.Service,
 	matchingSVC matchingservice.Service,
 	matchingValidator matchingsvalidator.Validator,
-	presenceSVC presenceservice.Service,
+	presenceSVC presence.Client,
 
 ) Server {
 	fmt.Println(cfg)
