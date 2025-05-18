@@ -17,6 +17,18 @@ This project built with go and echo framework
 
 - Implemented Authentication system with JWT.
 - Implement a Role Base Authorization
+## Scheduled Task With Redis
+- Match users from Waiting list and send to Event
+## Message Driven system for the Matching Service and Play service
+## Real Time communication with Websocket
+## GRPC System for presence service and Matching Service
+- Use protobuf protocol
+## UintTest & Integration Test
+### Implement Integration Test
+- use dokcertest package to run services
+- Run in memory GRPC Server & Client for Tests
+- Run an isolate mysql service and migrate data and ready for run test
+
 
 
 ## Installation
@@ -55,15 +67,16 @@ Visit http://localhost:8080/ in your browser to access the application
 
 
 
-4. **Asynchronous Tasks**:
+2. **Asynchronous Tasks**:
 - Experience improved performance due to the asynchronous handling of tasks
 
-6. **CI with GitHub Actions**:
+3. **CI with GitHub Actions**:
 - Utilize the predefined GitHub Actions workflows for automated testing, linting, and deployment.
 - View CI status and check build, test, and deployment logs directly on GitHub.
 
-7. **Customization**:
+4. **Customization**:
 - Explore and modify the codebase to customize the platform according to your specific requirements.
+
 
 
 ## Technologies Used
@@ -75,6 +88,8 @@ Visit http://localhost:8080/ in your browser to access the application
 - GitHub Actions
 - Message Queue
 - Other relevant technologies and libraries used in the project
+- dockerTest
+- Mysql
 
 
 
