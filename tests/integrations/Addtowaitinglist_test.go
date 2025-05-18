@@ -3,13 +3,14 @@ package integrations
 import (
 	presenceClient "GameApp/adaptor/presence"
 	"GameApp/adaptor/redis"
-	"GameApp/conf"
 	"GameApp/contract/goproto/presence"
+	"GameApp/delivery/grpcserver/presenceserver"
 	"GameApp/delivery/httpserver/matchinghandler"
 	"GameApp/entity"
 	"GameApp/param"
 	"GameApp/repository/mysql"
 	"GameApp/repository/mysql/mysqluser"
+	redispresence "GameApp/repository/redis/presence"
 	"GameApp/repository/redis/redismatching"
 	"GameApp/service/authservice"
 	"GameApp/service/matchingservice"
@@ -17,18 +18,47 @@ import (
 	"GameApp/service/userservice"
 	"GameApp/validator/matchingsvalidator"
 	"bytes"
+	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/test/bufconn"
+	"net"
+
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestAddToWaitingList(t *testing.T) {
-	cfg := conf.Load()
-	mysqlRepo := mysql.New(cfg.Mysql)
+	/*
+		Start an In-Memory gRPC Server for Testing
+	*/
+	redisAdaptor := redis.New(cfg.Redis)
+	presenceRepo := redispresence.New(redisAdaptor)
+	svc := presenceservice.New(cfg.Presence, presenceRepo)
+	presenceServer := presenceserver.New(svc)
+	lis = bufconn.Listen(bufSize)
+	s := grpc.NewServer()
+	presence.RegisterPresenceServiceServer(s, &presenceServer)
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			panic(err)
+		}
+	}()
+
+	// start a user service and create a user`
+	fmt.Println("mysql port", cfg.Mysql.Port)
+	mysqlRepo := mysql.New(mysql.Config{
+		Host:     cfg.Mysql.Host,
+		Port:     cfg.Mysql.Port,
+		Username: cfg.Mysql.Username,
+		Password: cfg.Mysql.Password,
+		DBName:   cfg.Mysql.DBName,
+	})
 	authSvc := authservice.New(cfg.Auth)
 
 	userMysql := mysqluser.New(mysqlRepo)
@@ -41,7 +71,10 @@ func TestAddToWaitingList(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+
+	// Start echo server
 	e := echo.New()
+	// create a request and body and get response
 	reqBody := param.AddToWaitingListRequest{
 		UserID:   createdUser.User.ID,
 		Category: entity.FootballCategory,
@@ -52,16 +85,26 @@ func TestAddToWaitingList(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
+	// create matching service and send the request to its handler
 
-	redisAdaptor := redis.New(cfg.Redis)
 	matchingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
 	matchingValidator := matchingsvalidator.New()
 
-	presenceSVC := presenceservice.New(cfg.Presence, mysqlRepo)
-	matchingSVC := matchingservice.New(cfg.MatchingService, matchingRepo, presenceSClient, redisAdaptor)
+	// create in memory grpc server
+	// DialOption configures how we set up the connection.
+	bufDialer := func(context.Context, string) (net.Conn, error) {
+		return lis.Dial()
+	}
+
+	presenceC := presenceClient.New(
+		"bufnet", // dummy address
+		grpc.WithContextDialer(bufDialer),
+	)
+
+	matchingSVC := matchingservice.New(cfg.MatchingService, matchingRepo, presenceC, redisAdaptor)
 
 	// Call handler
-	handler := matchinghandler.New(cfg.Auth, authSvc, matchingSVC, matchingValidator, presenceSClient)
+	handler := matchinghandler.New(cfg.Auth, authSvc, matchingSVC, matchingValidator, presenceC)
 	err = handler.AddToWaitingList(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, rec.Code)

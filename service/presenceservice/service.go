@@ -15,6 +15,7 @@ type Config struct {
 
 type Repo interface {
 	Upsert(ctx context.Context, key string, timestamp int64, PresenceExpireTime time.Duration) error
+	GetPresence(ctx context.Context, userIDS []uint) ([]param.GetPresenceItem, error)
 }
 
 type Service struct {
@@ -38,9 +39,11 @@ func (s Service) Upsert(ctx context.Context, req param.UpsertPresenceRequest) (p
 
 func (s Service) GetPresence(ctx context.Context, req param.GetPresenceRequest) (param.GetPresenceResponse, error) {
 	//TODO Implement Me
-	return param.GetPresenceResponse{Items: []param.GetPresenceItem{
-		{UserID: 1, Timestamp: 123452136},
-		{UserID: 2, Timestamp: 123412356},
-		{UserID: 3, Timestamp: 121323456},
-	}}, nil
+	PresensItems, err := s.repo.GetPresence(ctx, req.UserIDs)
+	if err != nil {
+		return param.GetPresenceResponse{}, err
+
+	}
+
+	return param.GetPresenceResponse{Items: PresensItems}, nil
 }

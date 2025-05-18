@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
 	"net"
 )
@@ -35,6 +36,18 @@ func (s Server) GetPresence(ctx context.Context, req *presence.GetPresenceReques
 }
 
 // TODO add upsert gRPC call
+
+func (s Server) UpsertPresence(ctx context.Context, req *presence.UpsertPresenceRequest) (*emptypb.Empty, error) {
+
+	res, err := s.svc.Upsert(ctx, param.UpsertPresenceRequest{UserID: uint(req.GetUserId())})
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(res)
+
+	return &emptypb.Empty{}, nil
+
+}
 
 func (s Server) Start() {
 	// listener := tcp port

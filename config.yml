@@ -17,7 +17,7 @@ redis_matching:
 
 mysql:
   host: localhost
-  port: 3308
+  port: 3306
   dbname: gameappDB
   username: Hamed
   password:  hmah8013

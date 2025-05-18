@@ -11,11 +11,14 @@ import (
 )
 
 type Client struct {
-	address string
+	address     string
+	dialOptions grpc.DialOption
 }
 
-func New(address string) Client {
-	return Client{address: address}
+// DialOption configures how we set up the connection.
+
+func New(address string, dialOption grpc.DialOption) Client {
+	return Client{address: address, dialOptions: dialOption}
 }
 
 func (c Client) GetPresence(ctx context.Context, request param.GetPresenceRequest) (param.GetPresenceResponse, error) {

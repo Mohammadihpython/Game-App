@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"strconv"
 	"time"
 )
 
@@ -25,10 +26,12 @@ func (m MYSQL) Conn() *sql.DB {
 }
 
 func New(cfg Config) *MYSQL {
-
+	port, _ := strconv.Atoi(cfg.Port)
+	add := fmt.Sprintf("%s:%s@(%s:%d)/%s", cfg.Username, cfg.Password, cfg.Host, port, cfg.DBName)
+	fmt.Println(add)
 	db, err := sql.Open(
 		"mysql",
-		fmt.Sprintf("%s:%s@(%s:%s)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
+		fmt.Sprintf("%s:%s@(%s:%d)/%s", cfg.Username, cfg.Password, cfg.Host, port, cfg.DBName))
 	if err != nil {
 		panic(err)
 	}

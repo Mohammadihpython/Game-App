@@ -13,10 +13,10 @@ type Migrator struct {
 	migrations *migrate.FileMigrationSource
 }
 
-func New(cfg mysql.Config) Migrator {
+func New(cfg mysql.Config, dir string) Migrator {
 
 	migrations := &migrate.FileMigrationSource{
-		Dir: "./repository/mysql/migrations",
+		Dir: dir,
 	}
 	return Migrator{cfg: cfg, migrations: migrations}
 }
@@ -24,7 +24,7 @@ func New(cfg mysql.Config) Migrator {
 func (m Migrator) Up() {
 	db, err := sql.Open(
 		"mysql",
-		fmt.Sprintf("%s:%s@(%s:%d)/%s?parseTime=true", m.cfg.Username, m.cfg.Password, m.cfg.Host, m.cfg.Port, m.cfg.DBName))
+		fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true", m.cfg.Username, m.cfg.Password, m.cfg.Host, m.cfg.Port, m.cfg.DBName))
 	if err != nil {
 		panic(fmt.Errorf("cant open mysql db %v", err))
 	}
@@ -38,7 +38,7 @@ func (m Migrator) Up() {
 func (m Migrator) Down(cfg mysql.Config) {
 	db, err := sql.Open(
 		"mysql",
-		fmt.Sprintf("%s:%s@(%s:%d)/%s?parseTime=true", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
+		fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
 	if err != nil {
 		panic(fmt.Errorf("cant open mysql db %v", err))
 	}

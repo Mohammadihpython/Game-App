@@ -32,7 +32,7 @@ func New(authConfig authservice.Config,
 		authSVC,
 		matchingSVC,
 		validator,
-		presenceCLient,
+		presenceClient,
 	}
 }
 

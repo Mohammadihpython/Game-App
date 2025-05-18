@@ -86,7 +86,7 @@ func setupServices(cfg conf.Config) (
 	authorizationservice.Service,
 	matchingservice.Service,
 	matchingsvalidator.Validator,
-	presenceservice.Service,
+	presenceClient.Client,
 ) {
 
 	authSvc := authservice.New(cfg.Auth)
@@ -114,9 +114,8 @@ func setupServices(cfg conf.Config) (
 
 	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo, presenceSClient, redisAdaptor)
 
-	presenceRepo := redispresence.New(redisAdaptor)
+	presenceC := presenceClient.New(":8086")
 
-	presenceSVC := presenceservice.New(cfg.Presence, presenceRepo)
+	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matcingv, presenceC
 
-	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matcingv, presenceSVC
 }
