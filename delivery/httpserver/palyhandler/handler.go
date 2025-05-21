@@ -33,17 +33,16 @@ func (h Handler) GameHandler(c echo.Context) error {
 	category := matchedUsers.Category
 	questions, err := h.QuestionSVC.GetQuestions(string(category), h.Config.questionLimit)
 	if err != nil {
-		return  richerror.New(OP).
+		return richerror.New(OP).
 			WithWrappedError(err).
 			WithMessage("can not get Questions").
 			WithKind(richerror.KindInvalid)
-	)
-
-
 
 	}
+	h.PlayerSVC.CreateGame()
 
-	// create an game  and player and send message for client and users
+	// create a game  and player and send message for client and users
+
 	// send questions to clients
 	// calculate user answers one by one and send response and update leader borde
 	// send the another user data to user like how many question solve and

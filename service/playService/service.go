@@ -25,8 +25,8 @@ func NewPlayService(consumer broker.Consumer, player PlayRepo) Service {
 
 // implement create game
 
-// make a game func
-func (s Service) createGame(category entity.Category, questionIDs []uint, playerIDs []uint) (entity.Game, error) {
+// CreateGame make a game func
+func (s Service) CreateGame(category entity.Category, questionIDs []uint, playerIDs []uint) (entity.Game, error) {
 	gameID, err := s.repo.createGame(category, questionIDs, playerIDs)
 	if err != nil {
 		return entity.Game{}, err
@@ -35,17 +35,17 @@ func (s Service) createGame(category entity.Category, questionIDs []uint, player
 
 }
 
-// create player func
-func (s Service) createPlayer(userID entity.User, gameID entity.Game, score uint, AnswerIDs []entity.PlayerAnswer) error {
+// CreatePlayer create player func
+func (s Service) CreatePlayer(userID entity.User, gameID entity.Game, score uint, AnswerIDs []entity.PlayerAnswer) (int, error) {
 	playerID, err := s.repo.createPlayer(userID, gameID, score, AnswerIDs)
 	if err != nil {
-		return err
+		return playerID, err
 	}
-	return nil
+	return playerID, nil
 }
 
-// create player Answer func
-func (s Service) createPlayerAnswer(playerID entity.User, questionID entity.Question, choice entity.PossibleAnswerChoice) error {
+// CreatePlayerAnswer create player Answer func
+func (s Service) CreatePlayerAnswer(playerID entity.User, questionID entity.Question, choice entity.PossibleAnswerChoice) error {
 	err := s.repo.createPlayerAnswer(playerID, questionID, choice)
 	if err != nil {
 		return err

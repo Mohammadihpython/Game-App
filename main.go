@@ -5,6 +5,7 @@ import (
 	"GameApp/adaptor/redis"
 	"GameApp/conf"
 	"GameApp/delivery/httpserver"
+	"GameApp/pkg/logger"
 	"GameApp/repository/migrator"
 	"GameApp/repository/mysql"
 	"GameApp/repository/mysql/mysqlaccesscontrol"
@@ -20,6 +21,7 @@ import (
 	"GameApp/validator/uservalidator"
 	"context"
 	"fmt"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"os"
@@ -29,8 +31,11 @@ import (
 
 func main() {
 	fmt.Println("start Echo server")
+
 	cfg := conf.Load()
-	fmt.Println(cfg)
+	//start using Logger
+	logger.Logger.Info("configs are Loaded", zap.Any("config", cfg))
+
 	// TODO add command for migrations to dont run automatically
 	mgr := migrator.New(cfg.Mysql, "repository/mysql/migrations/")
 	mgr.Up()
