@@ -1,5 +1,5 @@
 production:
   dialect: mysql
-  datasource: Hamed:hmah8013@(localhost:3306)/gameappDB?parseTime=true
-  dir: migrations
+  datasource: Hamed:hmah8013@(localhost:3308)/gameappDB?parseTime=true
+  dir: ./repository/mysql/migrations
   table: migrations

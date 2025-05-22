@@ -5,6 +5,7 @@ import (
 	"GameApp/conf"
 	"GameApp/delivery/httpserver/backofficeuserhandler"
 	"GameApp/delivery/httpserver/matchinghandler"
+	"GameApp/delivery/httpserver/playhandler"
 	"GameApp/delivery/httpserver/userHandler"
 	"GameApp/pkg/logger"
 	"GameApp/service/authorizationservice"
@@ -25,7 +26,9 @@ type Server struct {
 	userHandler           userHandler.Handler
 	backofficeUserHandler backofficeuserhandler.Handler
 	matchingHandler       matchinghandler.Handler
-	Router                *echo.Echo
+
+	playHandler playhandler.Handler
+	Router      *echo.Echo
 }
 
 func New(cfg conf.Config,
@@ -39,12 +42,12 @@ func New(cfg conf.Config,
 	presenceSVC presence.Client,
 
 ) Server {
-	fmt.Println(cfg)
 	return Server{
 		config:                cfg,
 		userHandler:           userHandler.New(cfg.Auth, authSvc, userSvc, validator, cfg.Auth.SignKey, presenceSVC),
 		backofficeUserHandler: backofficeuserhandler.New(cfg.Auth, authSvc, authorizationSvc, backOfficeUseSVC),
 		matchingHandler:       matchinghandler.New(cfg.Auth, authSvc, matchingSVC, matchingValidator, presenceSVC),
+		playHandler:           playhandler.Handler{},
 		Router:                echo.New(),
 	}
 }
@@ -91,7 +94,7 @@ func (s Server) Serve() {
 	s.userHandler.SetRouter(s.Router)
 	s.backofficeUserHandler.SetBackOfficeUserRouter(s.Router)
 	s.matchingHandler.SetRouter(s.Router)
-	fmt.Println(s.config.HTTPServer.Port)
+	s.playHandler.SetRouter(s.Router)
 	s.Router.Logger.Fatal(s.Router.Start(fmt.Sprintf(":%d", s.config.HTTPServer.Port)))
 
 }

@@ -3,11 +3,13 @@ package playService
 import (
 	"GameApp/contract/broker"
 	"GameApp/entity"
+	"GameApp/param"
+	"context"
 )
 
 type PlayRepo interface {
-	createGame(category entity.Category, questionIDs []uint, playerIDs []uint) (entity.Game, error)
-	createPlayer(userID entity.User, gameID entity.Game, score uint, AnswerIDs []entity.PlayerAnswer) (int, error)
+	createGame(ctx context.Context, category entity.Category, questions []entity.Question) (entity.Game, error)
+	createPlayer(ctx context.Context, userID entity.User, gameID uint) (int, error)
 	createPlayerAnswer(playerID entity.User, questionID entity.Question, choice entity.PossibleAnswerChoice) error
 }
 
@@ -26,18 +28,20 @@ func NewPlayService(consumer broker.Consumer, player PlayRepo) Service {
 // implement create game
 
 // CreateGame make a game func
-func (s Service) CreateGame(category entity.Category, questionIDs []uint, playerIDs []uint) (entity.Game, error) {
-	gameID, err := s.repo.createGame(category, questionIDs, playerIDs)
+func (s Service) CreateGame(ctx context.Context, req param.CreateGameRequest, questions []entity.Question) (entity.Game, error) {
+	game, err := s.repo.createGame(ctx, req.Category, questions)
 	if err != nil {
 		return entity.Game{}, err
 	}
-	return gameID, nil
+	return game, nil
 
 }
 
 // CreatePlayer create player func
-func (s Service) CreatePlayer(userID entity.User, gameID entity.Game, score uint, AnswerIDs []entity.PlayerAnswer) (int, error) {
-	playerID, err := s.repo.createPlayer(userID, gameID, score, AnswerIDs)
+func (s Service) CreatePlayer(ctx context.Context, userID uint, gameID uint) (int, error) {
+	playerID, err := s.repo.createPlayer(ctx, entity.User{
+		ID: userID,
+	}, gameID)
 	if err != nil {
 		return playerID, err
 	}
