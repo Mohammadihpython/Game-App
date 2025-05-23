@@ -5,7 +5,7 @@ auth:
   sign_key: "Hmdsfksdf"
 
 http_server:
-  port: 8080
+  port: 8000
 
 presence_service:
   presence_expire_time: "60m"

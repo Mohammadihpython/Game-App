@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
 
@@ -91,6 +92,7 @@ func (s Server) Serve() {
 
 	//	Routes
 	s.Router.GET("/", s.healthCheck)
+	s.Router.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
 	s.userHandler.SetRouter(s.Router)
 	s.backofficeUserHandler.SetBackOfficeUserRouter(s.Router)
 	s.matchingHandler.SetRouter(s.Router)

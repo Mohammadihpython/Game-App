@@ -5,6 +5,7 @@ import (
 	"GameApp/adaptor/redis"
 	"GameApp/conf"
 	"GameApp/delivery/httpserver"
+	"GameApp/metrics"
 	"GameApp/pkg/logger"
 	"GameApp/repository/migrator"
 	"GameApp/repository/mysql"
@@ -21,6 +22,7 @@ import (
 	"GameApp/validator/uservalidator"
 	"context"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -32,11 +34,17 @@ import (
 	_ "net/http/pprof"
 )
 
+// Prometheus initialize
+
 func main() {
+	// initialize a split http instance for pprof
 	go func() {
 		http.ListenAndServe(":8099", nil)
 	}()
 
+	// prometheus metric initialize
+	metrics.Init()
+	http.Handle("/metrics", promhttp.Handler())
 	fmt.Println("start Echo server")
 
 	cfg := conf.Load()

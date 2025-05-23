@@ -1,14 +1,22 @@
 package userservice
 
 import (
+	"GameApp/metrics"
 	"GameApp/param"
 	"GameApp/pkg/richerror"
 	"GameApp/repository/mysql/mysqluser"
 	"fmt"
+	"time"
 )
 
 func (s Service) Login(req param.LoginRequest) (param.LoginResponse, error) {
 	const op = "userservice.Login"
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start).Seconds()
+		metrics.RequestDuration().WithLabelValues("userService", "/login").Observe(duration)
+	}()
+
 	//  check the existence of phone number from repository
 	//	get the mysqluser by phone number
 	// TODO : Its better to  separate method for check existence check  of get mysqluser by phone number
@@ -30,7 +38,7 @@ func (s Service) Login(req param.LoginRequest) (param.LoginResponse, error) {
 	if err != nil {
 		return param.LoginResponse{}, fmt.Errorf("failed to refresh token: %w", err)
 	}
-
+	metrics.RequestCounter().WithLabelValues("userService", "/login").Inc()
 	return param.LoginResponse{
 		User: param.UserInfo{
 			ID:          user.ID,
