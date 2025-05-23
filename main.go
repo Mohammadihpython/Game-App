@@ -24,12 +24,19 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
+
+	_ "net/http/pprof"
 )
 
 func main() {
+	go func() {
+		http.ListenAndServe(":8099", nil)
+	}()
+
 	fmt.Println("start Echo server")
 
 	cfg := conf.Load()
@@ -113,11 +120,11 @@ func setupServices(cfg conf.Config) (
 
 	matcingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
 
-	presenceSClient := presenceClient.New(":8086", grpc.DialOption(grpc.WithTransportCredentials(insecure.NewCredentials())))
+	presenceSClient := presenceClient.New(":8070", grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	matchingSVC := matchingservice.New(cfg.MatchingService, matcingRepo, presenceSClient, redisAdaptor)
 
-	presenceC := presenceClient.New(":8086", grpc.DialOption(grpc.WithTransportCredentials(insecure.NewCredentials())))
+	presenceC := presenceClient.New(":8070", grpc.DialOption(grpc.WithTransportCredentials(insecure.NewCredentials())))
 
 	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matcingv, presenceC
 

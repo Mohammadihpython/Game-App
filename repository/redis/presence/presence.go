@@ -20,7 +20,7 @@ func (d DB) Upsert(ctx context.Context, key string, timestamp int64, expTime tim
 }
 
 func (d DB) GetPresence(ctx context.Context, userIDs []uint) ([]param.GetPresenceItem, error) {
-	const OP = "redispresences.Upsert"
+	const OP = "redispresences.Getpresence"
 	keys := make([]string, len(userIDs))
 	for i, userID := range userIDs {
 		keys[i] = fmt.Sprintf("presence:%d", userID) // Assuming presence data is stored with this key format
@@ -31,18 +31,18 @@ func (d DB) GetPresence(ctx context.Context, userIDs []uint) ([]param.GetPresenc
 	if err != nil {
 		return nil, fmt.Errorf("failed to get presence data: %w", err)
 	}
-
+	fmt.Println(results, keys)
 	var presenceItems []param.GetPresenceItem
 	for i, res := range results {
 		if res == nil {
 			continue // Skip missing entries
 		}
-
+		fmt.Println("res of precense ", res)
 		timestamp, err := strconv.ParseInt(res.(string), 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("invalid timestamp for user %d: %w", userIDs[i], err)
 		}
-
+		fmt.Println()
 		presenceItems = append(presenceItems, param.GetPresenceItem{
 			UserID:    userIDs[i],
 			Timestamp: timestamp,

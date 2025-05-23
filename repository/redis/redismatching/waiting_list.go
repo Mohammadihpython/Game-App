@@ -14,10 +14,10 @@ import (
 
 func (d DB) AddToWaitingList(userID uint, category entity.Category) error {
 	const OP = richerror.Op("redismatching.AddToWaitingList")
-
+	fmt.Println("AddToWaitingList", userID, category)
 	_, err := d.adaptor.Client().ZAdd(
 		context.Background(),
-		fmt.Sprintf("&%s:%s", d.config.WaitingListPrefix, category),
+		fmt.Sprintf("%s:%s", d.config.WaitingListPrefix, category),
 		redis.Z{
 			Score:  float64(timestamp.Now()),
 			Member: fmt.Sprintf("%d", userID),
@@ -45,6 +45,7 @@ func (d DB) GetWaitingListByCategory(ctx context.Context, category entity.Catego
 	}
 	var result = make([]entity.WaitingMember, 0)
 	for _, l := range list {
+		fmt.Println("userID from redis ", l.Member)
 		userID, _ := strconv.Atoi(l.Member.(string))
 		result = append(result, entity.WaitingMember{
 			UserID:    uint(userID),
@@ -53,6 +54,8 @@ func (d DB) GetWaitingListByCategory(ctx context.Context, category entity.Catego
 		})
 
 	}
+
+	fmt.Println("its result of users", result)
 	return result, nil
 }
 

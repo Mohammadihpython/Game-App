@@ -18,7 +18,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	client := presenceClient.New(conn)
+	client := presenceClient.New(":8080", nil)
 	res, err := client.GetPresence(context.Background(), param.GetPresenceRequest{UserIDs: []uint{1, 2, 3}})
 	if err != nil {
 		panic(err)

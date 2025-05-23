@@ -39,7 +39,7 @@ func (s Server) GetPresence(ctx context.Context, req *presence.GetPresenceReques
 
 func (s Server) UpsertPresence(ctx context.Context, req *presence.UpsertPresenceRequest) (*emptypb.Empty, error) {
 
-	res, err := s.svc.Upsert(ctx, param.UpsertPresenceRequest{UserID: uint(req.GetUserId())})
+	res, err := s.svc.Upsert(ctx, param.UpsertPresenceRequest{UserID: uint(req.GetUserId()), Timestamp: req.GetTimestamp()})
 	if err != nil {
 		return nil, err
 	}

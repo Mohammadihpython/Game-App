@@ -9,18 +9,18 @@ import (
 	"GameApp/repository/mysql"
 	"GameApp/repository/mysql/mysqlaccesscontrol"
 	"GameApp/repository/mysql/mysqluser"
-	redispresence "GameApp/repository/redis/presence"
 	"GameApp/repository/redis/redismatching"
 	"GameApp/service/authorizationservice"
 	"GameApp/service/authservice"
 	"GameApp/service/backofficeuserservice"
 	"GameApp/service/matchingservice"
-	"GameApp/service/presenceservice"
 	"GameApp/service/userservice"
 	"GameApp/validator/matchingsvalidator"
 	"GameApp/validator/uservalidator"
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"os"
 	"os/signal"
 	"time"
@@ -31,7 +31,7 @@ func main() {
 	cfg := conf.Load()
 	fmt.Println(cfg)
 	// TODO add command for migrations to dont run automatically
-	mgr := migrator.New(cfg.Mysql)
+	mgr := migrator.New(cfg.Mysql, "../../repository/mysql/migrations")
 	mgr.Up()
 	userSvc, authSvc, userValidator, backofficeSVC, authorizationSVC, matchingSVC, matchingV, presenceSVC := setupServices(cfg)
 
@@ -64,7 +64,7 @@ func setupServices(cfg conf.Config) (
 	authorizationservice.Service,
 	matchingservice.Service,
 	matchingsvalidator.Validator,
-	presenceservice.Service,
+	presenceClient.Client,
 ) {
 
 	authSvc := authservice.New(cfg.Auth)
@@ -86,13 +86,11 @@ func setupServices(cfg conf.Config) (
 	redisAdaptor := redis.New(cfg.Redis)
 	matchingRepo := redismatching.New(cfg.RedisMatching, redisAdaptor)
 
-	presenceAdaptor := presenceClient.New(":8086")
+	presenceAdaptor := presenceClient.New(":8080", nil)
+	pub := redis.New(cfg.Redis)
+	matchingSVC := matchingservice.New(cfg.MatchingService, matchingRepo, presenceAdaptor, pub)
 
-	matchingSVC := matchingservice.New(cfg.MatchingService, matchingRepo, presenceAdaptor)
+	presenceC := presenceClient.New(":8086", grpc.DialOption(grpc.WithTransportCredentials(insecure.NewCredentials())))
 
-	presenceRepo := redispresence.New(redisAdaptor)
-
-	presencSVC := presenceservice.New(cfg.Presence, presenceRepo)
-
-	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matchingv, presencSVC
+	return userSvc, authSvc, userValidator, backofficeUserSvc, authorizationSvc, matchingSVC, matchingv, presenceC
 }

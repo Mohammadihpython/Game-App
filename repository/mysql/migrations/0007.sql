@@ -1,4 +1,14 @@
 -- +migrate Up
+CREATE TABLE questions (
+                           `id` INT  PRIMARY KEY Auto_INCREMENT,
+                           `text` TEXT NOT NULL,
+                           correct_answer_id INT DEFAULT NULL, -- FK to possible_answers.id
+                           difficulty TINYINT NOT NULL CHECK ( difficulty BETWEEN 1 AND 3),
+                           category INT not null
+
+);
+
+
 CREATE TABLE game(
                         `id` INT PRIMARY KEY  Auto_INCREMENT,
                         `category` int NOT NULL,
@@ -18,16 +28,6 @@ CREATE TABLE possible_answers (
 
                                   FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
                                   FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
-);
-
-
-CREATE TABLE questions (
-                                `id` INT  PRIMARY KEY Auto_INCREMENT,
-                                `text` TEXT NOT NULL,
-                                correct_answer_id INT DEFAULT NULL, -- FK to possible_answers.id
-                                difficulty TINYINT NOT NULL CHECK ( difficulty BETWEEN 1 AND 3),
-                                category INT not null
-
 );
 
 

@@ -73,7 +73,7 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 	fmt.Println("start job")
 	defer wg.Done()
 	list, err := s.repo.GetWaitingListByCategory(ctx, category)
-	fmt.Println(list, err)
+	fmt.Println("the list of waited uses", list, err)
 
 	if err != nil {
 		log.Errorf("GetWaitingListByCategory err:%v\n", err)
@@ -83,10 +83,11 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 	for _, l := range list {
 		userIDs = append(userIDs, l.UserID)
 	}
+	fmt.Println("userIDS : ", userIDs)
 	if len(userIDs) < 2 {
 		return
 	}
-	presenceList, err := s.presenceClient.GetPresence(ctx, param.GetPresenceRequest{UserIDs: []uint{1, 2, 3}})
+	presenceList, err := s.presenceClient.GetPresence(ctx, param.GetPresenceRequest{UserIDs: userIDs})
 	if err != nil {
 
 		fmt.Println("match err", err)
@@ -96,6 +97,8 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 	for _, l := range presenceList.Items {
 		presenceUserIDs = append(presenceUserIDs, l.UserID)
 	}
+
+	fmt.Println("presenceUserIDs : ", presenceUserIDs)
 	var toBeRemovedUsers = make([]uint, 0)
 	var finalList = make([]entity.WaitingMember, 0)
 	for _, l := range list {
@@ -120,8 +123,9 @@ func (s Service) match(ctx context.Context, category entity.Category, wg *sync.W
 		}
 		// publish a new event for mu
 		payload := protobufEncoder.EncodeEvent(entity.MatchingUsersMatchedEvent, matchedUsers)
+		fmt.Println("this is payload", payload)
 		go s.pub.Publish(entity.MatchingUsersMatchedEvent, payload)
-		
+
 		matchedUsersTobeRemoved = append(matchedUsersTobeRemoved, userIDs...)
 	}
 

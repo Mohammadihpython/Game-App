@@ -50,3 +50,10 @@ docker compose exec app_name bash
 
 mysql -u name -p
 
+
+
+GET goroutine profile with pprof
+➜  GameApp git:(main) ✗ curl http://localhost:8099/debug/pprof/goroutine\?debug\=1  --output goroutine.o
+➜  GameApp git:(main) ✗ go tool pprof -http=:8086 ./goroutine.o
+go tool pprof -http=:8086  ./gameapp ./goroutine.o
+

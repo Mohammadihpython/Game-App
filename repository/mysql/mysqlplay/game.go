@@ -18,7 +18,12 @@ func (d *DB) createGame(ctx context.Context, category entity.Category, questions
 		tx.Rollback()
 		return entity.Game{}, err
 	}
-	var GameID, err = res.LastInsertId()
+	GameID, err := res.LastInsertId()
+	if err != nil {
+		tx.Rollback()
+		return entity.Game{}, err
+	}
+
 	if err != nil {
 		tx.Rollback()
 		return entity.Game{}, err

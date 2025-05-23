@@ -7,6 +7,6 @@ import (
 
 func (h Handler) SetRouter(e *echo.Echo) {
 
-	e.POST("/users/profile", h.AddToWaitingList, middleware.Auth(h.authSVC, h.authConfig), middleware.UpsertPresence(h.presenceClient))
+	e.POST("/users/add-to-game", h.AddToWaitingList, middleware.Auth(h.authSVC, h.authConfig), middleware.UpsertPresence(h.presenceClient))
 
 }

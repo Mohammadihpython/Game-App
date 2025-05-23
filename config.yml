@@ -12,7 +12,7 @@ presence_service:
   presence_prefix: "presence"
 
 redis_matching:
-  waiting_list_prefix: "waiting_prefix"
+  waiting_list: "waiting_users"
 
 
 mysql:
@@ -23,7 +23,7 @@ mysql:
   password:  hmah8013
 
 scheduler:
-  match_waited_users_internal_in_seconds: 2
+  match_waited_users_internal_in_seconds: 10
 
 redis:
   port: 6380

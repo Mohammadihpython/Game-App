@@ -1,0 +1,77 @@
+goroutine profile: total 15
+3 @ 0x4768ee 0x452445 0x797eac 0x47e941
+#	0x797eab	google.golang.org/grpc/internal/grpcsync.(*CallbackSerializer).run+0x10b	/home/hameddev/go/pkg/mod/google.golang.org/grpc@v1.72.0/internal/grpcsync/callback_serializer.go:88
+
+2 @ 0x4768ee 0x452445 0xadf587 0x47e941
+#	0xadf586	database/sql.(*DB).connectionOpener+0x86	/usr/lib/golang/src/database/sql/sql.go:1253
+
+1 @ 0x411be9 0x478689 0xc3d153 0x47e941
+#	0x478688	os/signal.signal_recv+0x28	/usr/lib/golang/src/runtime/sigqueue.go:152
+#	0xc3d152	os/signal.loop+0x12		/usr/lib/golang/src/os/signal/signal_unix.go:23
+
+1 @ 0x435591 0x47581d 0xc52d31 0xc52b65 0xc4f98b 0xc69c0f 0xc6a6be 0x842709 0x84460a 0x8618ce 0x8410b0 0x47e941
+#	0xc52d30	runtime/pprof.writeRuntimeProfile+0xb0	/usr/lib/golang/src/runtime/pprof/pprof.go:793
+#	0xc52b64	runtime/pprof.writeGoroutine+0x44	/usr/lib/golang/src/runtime/pprof/pprof.go:752
+#	0xc4f98a	runtime/pprof.(*Profile).WriteTo+0x14a	/usr/lib/golang/src/runtime/pprof/pprof.go:374
+#	0xc69c0e	net/http/pprof.handler.ServeHTTP+0x52e	/usr/lib/golang/src/net/http/pprof/pprof.go:272
+#	0xc6a6bd	net/http/pprof.Index+0xdd		/usr/lib/golang/src/net/http/pprof/pprof.go:388
+#	0x842708	net/http.HandlerFunc.ServeHTTP+0x28	/usr/lib/golang/src/net/http/server.go:2220
+#	0x844609	net/http.(*ServeMux).ServeHTTP+0x1c9	/usr/lib/golang/src/net/http/server.go:2747
+#	0x8618cd	net/http.serverHandler.ServeHTTP+0x8d	/usr/lib/golang/src/net/http/server.go:3210
+#	0x8410af	net/http.(*conn).serve+0x5cf		/usr/lib/golang/src/net/http/server.go:2092
+
+1 @ 0x4768ee 0x40c1fc 0x40bdb2 0xb1f870 0xb25572 0xc6c211 0x47e941
+#	0xb1f86f	github.com/go-co-op/gocron.(*Scheduler).StartBlocking+0xcf	/home/hameddev/go/pkg/mod/github.com/go-co-op/gocron@v1.37.0/scheduler.go:89
+#	0xb25571	GameApp/scheduler.Scheduler.Start+0x171				/home/hameddev/GolandProjects/GameApp/scheduler/scheduler.go:30
+#	0xc6c210	main.main.func3+0x1b0						/home/hameddev/GolandProjects/GameApp/main.go:67
+
+1 @ 0x4768ee 0x40c1fc 0x40bdb2 0xc6beae 0x44016b 0x47e941
+#	0xc6bead	main.main+0x9ed		/home/hameddev/GolandProjects/GameApp/main.go:73
+#	0x44016a	runtime.main+0x28a	/usr/lib/golang/src/runtime/proc.go:272
+
+1 @ 0x4768ee 0x40c1fc 0x40bdd2 0xc13a09 0x47e941
+#	0xc13a08	gopkg.in/natefinch/lumberjack%2ev2.(*Logger).millRun+0x48	/home/hameddev/go/pkg/mod/gopkg.in/natefinch/lumberjack.v2@v2.2.1/lumberjack.go:379
+
+1 @ 0x4768ee 0x438a97 0x475be5 0x4f2607 0x4f79d5 0x4f79c3 0x63c4c9 0x65357e 0x652630 0xbb8f77 0x84612c 0xbb7012 0xc16d9b 0xc6c298 0x47e941
+#	0x475be4	internal/poll.runtime_pollWait+0x84				/usr/lib/golang/src/runtime/netpoll.go:351
+#	0x4f2606	internal/poll.(*pollDesc).wait+0x26				/usr/lib/golang/src/internal/poll/fd_poll_runtime.go:84
+#	0x4f79d4	internal/poll.(*pollDesc).waitRead+0x294			/usr/lib/golang/src/internal/poll/fd_poll_runtime.go:89
+#	0x4f79c2	internal/poll.(*FD).Accept+0x282				/usr/lib/golang/src/internal/poll/fd_unix.go:620
+#	0x63c4c8	net.(*netFD).accept+0x28					/usr/lib/golang/src/net/fd_unix.go:172
+#	0x65357d	net.(*TCPListener).accept+0x1d					/usr/lib/golang/src/net/tcpsock_posix.go:159
+#	0x65262f	net.(*TCPListener).AcceptTCP+0x2f				/usr/lib/golang/src/net/tcpsock.go:359
+#	0xbb8f76	github.com/labstack/echo/v4.tcpKeepAliveListener.Accept+0x16	/home/hameddev/go/pkg/mod/github.com/labstack/echo/v4@v4.13.3/echo.go:988
+#	0x84612b	net/http.(*Server).Serve+0x30b					/usr/lib/golang/src/net/http/server.go:3330
+#	0xbb7011	github.com/labstack/echo/v4.(*Echo).Start+0xd1			/home/hameddev/go/pkg/mod/github.com/labstack/echo/v4@v4.13.3/echo.go:685
+#	0xc16d9a	GameApp/delivery/httpserver.Server.Serve+0x85a			/home/hameddev/GolandProjects/GameApp/delivery/httpserver/server.go:98
+#	0xc6c297	main.main.func2+0x57						/home/hameddev/GolandProjects/GameApp/main.go:60
+
+1 @ 0x4768ee 0x438a97 0x475be5 0x4f2607 0x4f79d5 0x4f79c3 0x63c4c9 0x65357e 0x652750 0x84612c 0x845df1 0xc6c9d7 0xc6c9af 0x47e941
+#	0x475be4	internal/poll.runtime_pollWait+0x84		/usr/lib/golang/src/runtime/netpoll.go:351
+#	0x4f2606	internal/poll.(*pollDesc).wait+0x26		/usr/lib/golang/src/internal/poll/fd_poll_runtime.go:84
+#	0x4f79d4	internal/poll.(*pollDesc).waitRead+0x294	/usr/lib/golang/src/internal/poll/fd_poll_runtime.go:89
+#	0x4f79c2	internal/poll.(*FD).Accept+0x282		/usr/lib/golang/src/internal/poll/fd_unix.go:620
+#	0x63c4c8	net.(*netFD).accept+0x28			/usr/lib/golang/src/net/fd_unix.go:172
+#	0x65357d	net.(*TCPListener).accept+0x1d			/usr/lib/golang/src/net/tcpsock_posix.go:159
+#	0x65274f	net.(*TCPListener).Accept+0x2f			/usr/lib/golang/src/net/tcpsock.go:372
+#	0x84612b	net/http.(*Server).Serve+0x30b			/usr/lib/golang/src/net/http/server.go:3330
+#	0x845df0	net/http.(*Server).ListenAndServe+0x70		/usr/lib/golang/src/net/http/server.go:3259
+#	0xc6c9d6	net/http.ListenAndServe+0x36			/usr/lib/golang/src/net/http/server.go:3514
+#	0xc6c9ae	main.main.func1+0xe				/home/hameddev/GolandProjects/GameApp/main.go:37
+
+1 @ 0x4768ee 0x452445 0xafb77b 0x47e941
+#	0xafb77a	github.com/go-sql-driver/mysql.(*mysqlConn).startWatcher.func1+0x9a	/home/hameddev/go/pkg/mod/github.com/go-sql-driver/mysql@v1.9.2/connection.go:658
+
+1 @ 0x4768ee 0x452445 0xb1b848 0x47e941
+#	0xb1b847	github.com/go-co-op/gocron.(*executor).run+0xa7	/home/hameddev/go/pkg/mod/github.com/go-co-op/gocron@v1.37.0/executor.go:228
+
+1 @ 0x4d2b85 0x4d0e98 0x4f392e 0x4f3916 0x4f37b1 0x63a505 0x64a005 0x83ba37 0x47e941
+#	0x4d2b84	syscall.Syscall+0x24				/usr/lib/golang/src/syscall/syscall_linux.go:73
+#	0x4d0e97	syscall.read+0x37				/usr/lib/golang/src/syscall/zsyscall_linux_amd64.go:736
+#	0x4f392d	syscall.Read+0x2ad				/usr/lib/golang/src/syscall/syscall_unix.go:183
+#	0x4f3915	internal/poll.ignoringEINTRIO+0x295		/usr/lib/golang/src/internal/poll/fd_unix.go:745
+#	0x4f37b0	internal/poll.(*FD).Read+0x130			/usr/lib/golang/src/internal/poll/fd_unix.go:161
+#	0x63a504	net.(*netFD).Read+0x24				/usr/lib/golang/src/net/fd_posix.go:55
+#	0x64a004	net.(*conn).Read+0x44				/usr/lib/golang/src/net/net.go:189
+#	0x83ba36	net/http.(*connReader).backgroundRead+0x36	/usr/lib/golang/src/net/http/server.go:690
+

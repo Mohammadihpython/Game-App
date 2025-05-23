@@ -2,7 +2,6 @@ package testhelper
 
 import (
 	"database/sql"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"sort"
@@ -32,7 +31,6 @@ func RunMigrations(db *sql.DB, dir string) error {
 		if err != nil {
 			return err
 		}
-		logrus.Println("migrations %s applied successfully")
 
 	}
 	return nil

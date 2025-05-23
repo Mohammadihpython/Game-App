@@ -27,6 +27,7 @@ type Handler struct {
 func (h Handler) GameHandler(c echo.Context) error {
 	const OP = "PlayHandler.GameHandler"
 	//get the user ids and game category from event
+	// TODO ADD Channel or handel when the msg get from event start the other section
 	msg := h.consumer.Consumer(entity.MatchingUsersMatchedEvent)
 	matchedUsers := protobufEncoder.DecoderEvent(entity.MatchingUsersMatchedEvent, msg)
 	//get questions by category
