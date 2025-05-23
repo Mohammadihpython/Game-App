@@ -35,8 +35,6 @@ func (s Server) GetPresence(ctx context.Context, req *presence.GetPresenceReques
 
 }
 
-// TODO add upsert gRPC call
-
 func (s Server) UpsertPresence(ctx context.Context, req *presence.UpsertPresenceRequest) (*emptypb.Empty, error) {
 
 	res, err := s.svc.Upsert(ctx, param.UpsertPresenceRequest{UserID: uint(req.GetUserId()), Timestamp: req.GetTimestamp()})
